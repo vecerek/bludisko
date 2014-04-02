@@ -2,9 +2,10 @@ package ija.homework3.tape;
 
 
 public class Tape {
-	TapeField [] fieldArray;
-	TapeHead [] headArray;
-	TapeField [][] field2DArray;
+	public TapeField [] fieldArray;
+	public TapeHead [] headArray;
+	protected int w;
+	protected int h;
 	
 	public Tape(int f, int h, String format)
 	{
@@ -22,22 +23,18 @@ public class Tape {
 	/* Homework3 */
 	public Tape(int width, int height, int h, String format)
 	{
-		this.field2DArray = new TapeField[height][width];
+		this.w = width;
+		this.h = height;
+		this.fieldArray = new TapeField[width*height];
 		this.headArray = new TapeHead[h];
 		format = format.replaceAll("\\s", "");
-		int position = 0;
-
-		for(int i = 0; i < height; i++)
+		
+		for(int i = 0; i < format.length(); i++)
 		{
-			for(int j = 0; j < width; j++)
-			{
-				String objectToPlace = Character.toString(format.charAt(position));
-				this.field2DArray[i][j] = new TapeField(this, position, objectToPlace);
-				position++;
-			}
+			String objectToPlace = Character.toString(format.charAt(i));
+			this.fieldArray[i] = new TapeField(this, i, objectToPlace);
 		}
 	}
-	/*****************************************************/
 	
 	public TapeField fieldAt(int i)
 	{
@@ -60,5 +57,45 @@ public class Tape {
 			}
 		}
 		return null;
+	}
+	
+	/* Homework 3 */
+	/*
+	 * Returns the position to the top, if valid.
+	 */
+	public int isTop(int p)
+	{
+		int retPos = p - this.w;
+		return retPos > -1 ? retPos:-1;
+	}
+	/*
+	 * Returns the position to the bottom, if valid.
+	 */
+	public int isLower(int p)
+	{
+		int retPos = p + this.w;
+		return retPos < (this.w*this.h) ? retPos:-1;
+	}
+	/*
+	 * Returns the position to the right, if valid.
+	 */
+	public int isRight(int p)
+	{
+		int retPos = p + 1;
+		if(retPos >= this.w*this.h || (retPos % this.w) == 0)
+			return -1;
+		else
+			return retPos;
+	}
+	/*
+	 * Returns the position to the left, if valid.
+	 */
+	public int isLeft(int p)
+	{
+		int retPos = p - 1;
+		if(retPos < 0 || (retPos % this.w) == (this.w - 1))
+			return -1;
+		else
+			return retPos;
 	}
 }

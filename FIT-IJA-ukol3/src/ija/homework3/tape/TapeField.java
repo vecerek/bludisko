@@ -95,10 +95,19 @@ public class TapeField {
 	/* Homework 2*/
 	public TapeField rightField()
 	{
-		if((this.p+1) < this.tape.fieldArray.length)
-			return this.tape.fieldArray[this.p + 1];
+		/*	homework2 body
+		 * 	if((this.p+1) < this.tape.fieldArray.length)
+				return this.tape.fieldArray[this.p + 1];
+			else
+				return null;
+		*/
+		/* Homework 3 body */
+		int rightPos = this.tape.isRight(this.p);
+		if(rightPos != -1)
+			return this.tape.fieldArray[rightPos];
 		else
 			return null;
+		
 	}
 	
 	public boolean canBeOpen()
@@ -109,5 +118,41 @@ public class TapeField {
 			return true;
 		else
 			return false;
+	}
+	
+	/* Homework 3 */
+	
+	/*
+	 * Returns the field to the left, if exists.
+	 */
+	public TapeField leftField()
+	{
+		int leftPos = this.tape.isLeft(this.p);
+		if(leftPos != -1)
+			return this.tape.fieldArray[leftPos];
+		else
+			return null;
+	}
+	/*
+	 * Returns the field to the top, if exists.
+	 */
+	public TapeField topField()
+	{
+		int topPos = this.tape.isTop(this.p);
+		if(topPos != -1)
+			return this.tape.fieldArray[topPos];
+		else
+			return null;
+	}
+	/*
+	 *  Returns the field to the bottom, if exists.
+	 */
+	public TapeField lowerField()
+	{
+		int lowPos = this.tape.isLower(this.p);
+		if(lowPos != -1)
+			return this.tape.fieldArray[lowPos];
+		else
+			return null;
 	}
 }

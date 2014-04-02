@@ -1,7 +1,6 @@
 package ija.homework3.tape;
 
-import ija.homework3.objects.Gate;
-import ija.homework3.objects.Wall;
+import ija.homework3.objects.*;
 
 public abstract class TapeObject
 {
@@ -43,6 +42,8 @@ public abstract class TapeObject
 				return new Wall("w");
 			case "g":
 				return new Gate("g");
+			case "k":
+				return new Key("k");
 			default:
 				return null;
 		}

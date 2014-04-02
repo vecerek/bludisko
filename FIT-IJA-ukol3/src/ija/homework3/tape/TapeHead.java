@@ -3,7 +3,8 @@ package ija.homework3.tape;
 public class TapeHead {
 	protected int id;
 	protected TapeField field;
-	protected int keys = 0;
+	protected int keys;
+	protected int state;	//possible values: 0..3, 0=north 3=west orientation
 	
 	public TapeHead(int id)
 	{
@@ -14,6 +15,7 @@ public class TapeHead {
 	{
 		this.id = id;
 		this.field = f;
+		this.keys = 0;
 	}
 	
 	public int id()
@@ -80,19 +82,77 @@ public class TapeHead {
 	}
 
 	/* Homework3 */
-	public void step()
+	/*
+	 * Checks, if the head can take a step.
+	 * Returns true and takes the step, if the next field is seizable.
+	 * Otherwise returns false.
+	 */
+	public boolean step()
 	{
-		return;
+		TapeField fieldTmp = null;
+		switch(this.state)
+		{
+			/* North orientation */
+			case 0:
+				fieldTmp = this.field.topField();
+				break;
+			/* East orientation */
+			case 1:
+				fieldTmp = this.field.rightField();
+				break;
+			/* South orientation */
+			case 2:
+				fieldTmp = this.field.lowerField();
+				break;
+			/* West orientation */
+			case 3:
+				fieldTmp = this.field.leftField();
+				break;
+		}
+		return this.makeStep(fieldTmp);
+	}
+	
+	private boolean makeStep(TapeField fieldTmp)
+	{
+		if(fieldTmp != null)
+		{
+			if(fieldTmp.canSeize())
+			{
+				this.field.leave();
+				this.field = fieldTmp;
+				fieldTmp.seize(this);
+				return true;
+			}
+			else if(fieldTmp.canBeOpen() && (this.keys > 0))
+			{
+				fieldTmp.open();
+				this.keys--;
+				this.field.leave();
+				this.field = fieldTmp;
+				fieldTmp.seize(this);
+				return true;
+			}
+			else
+				return false;
+		}
+		else
+			return false;
 	}
 
 	public void left()
 	{
-		return;
+		if(this.state == 0)
+			this.state = 3;
+		else
+			this.state--;
 	}
 
 	public void right()
 	{
-		return;
+		if(this.state == 3)
+			this.state = 0;
+		else
+			this.state++;
 	}
 
 	public void take()
@@ -100,8 +160,8 @@ public class TapeHead {
 		return;
 	}
 
-	public int keys()
+	public void keys()
 	{
-		return 0;
+		System.out.println(this.keys);
 	}
 }
