@@ -78,4 +78,30 @@ public class TapeHead {
 		}
 		return false;
 	}
+
+	/* Homework3 */
+	public void step()
+	{
+		return;
+	}
+
+	public void left()
+	{
+		return;
+	}
+
+	public void right()
+	{
+		return;
+	}
+
+	public void take()
+	{
+		return;
+	}
+
+	public int keys()
+	{
+		return 0;
+	}
 }
