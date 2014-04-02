@@ -1,6 +1,6 @@
 package ija.homework3.objects;
 
-public class Wall extends ija.homework2.tape.TapeObject {
+public class Wall extends ija.homework3.tape.TapeObject {
 	public Wall(String name)
 	{
 		super(name);

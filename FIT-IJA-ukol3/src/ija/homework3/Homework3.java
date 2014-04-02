@@ -6,8 +6,8 @@ import java.lang.reflect.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
+import static org.junit.Assert.*;
 import ija.homework3.tape.*;
 import ija.homework3.objects.*;
 
@@ -15,7 +15,8 @@ import ija.homework3.objects.*;
  * Homework2: uloha c. 2 z IJA
  * Trida testujici implementaci zadani 2. ukolu.
  */
-public class Homework2 {
+@SuppressWarnings("unused")
+public class Homework3 {
 
     @Before
     public void setUp() {

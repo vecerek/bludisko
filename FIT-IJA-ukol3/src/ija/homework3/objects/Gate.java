@@ -1,6 +1,6 @@
 package ija.homework3.objects;
 
-public class Gate extends ija.homework2.tape.TapeObject {
+public class Gate extends ija.homework3.tape.TapeObject {
 	protected boolean opened = false;
 	
 	public Gate(String name) {

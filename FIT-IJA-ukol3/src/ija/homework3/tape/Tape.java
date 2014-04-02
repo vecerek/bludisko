@@ -22,7 +22,7 @@ public class Tape {
 	/* Homework3 */
 	public Tape(int width, int height, int h, String format)
 	{
-		this.field2DArray = new TapeField[hieght][width];
+		this.field2DArray = new TapeField[height][width];
 		this.headArray = new TapeHead[h];
 		format = format.replaceAll("\\s", "");
 		int position = 0;
