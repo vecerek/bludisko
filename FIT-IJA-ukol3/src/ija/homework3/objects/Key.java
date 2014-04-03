@@ -20,4 +20,9 @@ public class Key extends ija.homework3.tape.TapeObject {
 	public boolean canBeOpen() {
 		return false;
 	}
+	
+	@Override
+	public boolean canBeTaken() {
+		return true;
+	}
 }

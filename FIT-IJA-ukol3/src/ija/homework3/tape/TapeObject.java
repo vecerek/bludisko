@@ -14,6 +14,7 @@ public abstract class TapeObject
 	public abstract boolean canSeize();
 	public abstract boolean open();
 	public abstract boolean canBeOpen();
+	public abstract boolean canBeTaken();
 	
 	@Override
 	public boolean equals(Object o)

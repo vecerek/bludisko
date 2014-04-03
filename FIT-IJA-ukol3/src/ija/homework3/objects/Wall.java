@@ -21,4 +21,10 @@ public class Wall extends ija.homework3.tape.TapeObject {
 	public boolean canBeOpen() {
 		return false;
 	}
+	
+	/* Homework3 */
+	@Override
+	public boolean canBeTaken() {
+		return false;
+	}
 }

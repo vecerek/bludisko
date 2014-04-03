@@ -51,4 +51,10 @@ public class Gate extends ija.homework3.tape.TapeObject {
 		else
 			return true;
 	}
+	
+	/* Homework3 */
+	@Override
+	public boolean canBeTaken() {
+		return false;
+	}
 }

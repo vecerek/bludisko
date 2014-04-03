@@ -90,6 +90,7 @@ public class TapeHead {
 	public boolean step()
 	{
 		TapeField fieldTmp = null;
+		
 		switch(this.state)
 		{
 			/* North orientation */
@@ -109,28 +110,32 @@ public class TapeHead {
 				fieldTmp = this.field.leftField();
 				break;
 		}
+		
 		return this.makeStep(fieldTmp);
 	}
 	
+	/*
+	 * Opens and seizes a gate or seizes an empty field
+	 * or takes the key and seizes its field.
+	 */
 	private boolean makeStep(TapeField fieldTmp)
 	{
 		if(fieldTmp != null)
 		{
 			if(fieldTmp.canSeize())
 			{
-				this.field.leave();
-				this.field = fieldTmp;
-				fieldTmp.seize(this);
-				return true;
+				return seizeField(fieldTmp);
 			}
 			else if(fieldTmp.canBeOpen() && (this.keys > 0))
 			{
 				fieldTmp.open();
 				this.keys--;
-				this.field.leave();
-				this.field = fieldTmp;
-				fieldTmp.seize(this);
-				return true;
+				return seizeField(fieldTmp);
+			}
+			else if(fieldTmp.canBeTaken())
+			{
+				this.take(fieldTmp);
+				return seizeField(fieldTmp);
 			}
 			else
 				return false;
@@ -138,7 +143,22 @@ public class TapeHead {
 		else
 			return false;
 	}
+	
+	/*
+	 * The head moves to the new field by leaving
+	 * the actual position and seizing the new field.
+	 */
+	public boolean seizeField(TapeField fieldTmp)
+	{
+		this.field.leave();
+		this.field = fieldTmp;
+		fieldTmp.seize(this);
+		return true;
+	}
 
+	/*
+	 * Rotates the head 90° left.
+	 */
 	public void left()
 	{
 		if(this.state == 0)
@@ -146,7 +166,10 @@ public class TapeHead {
 		else
 			this.state--;
 	}
-
+	
+	/*
+	 * Rotates the head 90° right.
+	 */
 	public void right()
 	{
 		if(this.state == 3)
@@ -154,12 +177,20 @@ public class TapeHead {
 		else
 			this.state++;
 	}
-
-	public void take()
+	
+	/*
+	 * Adds a key and removes the object from the field.
+	 */
+	public void take(TapeField fieldTmp)
 	{
+		this.addKeys(1);
+		fieldTmp.obj = null;
 		return;
 	}
-
+	
+	/*
+	 * Prints the actual amount of keys possessed.
+	 */
 	public void keys()
 	{
 		System.out.println(this.keys);

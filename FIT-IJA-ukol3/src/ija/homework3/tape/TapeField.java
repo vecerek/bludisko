@@ -122,6 +122,16 @@ public class TapeField {
 	
 	/* Homework 3 */
 	
+	public boolean canBeTaken()
+	{
+		if(this.obj == null)
+			return false;
+		else if(this.obj.canBeTaken())
+			return true;
+		else
+			return false;
+	}
+	
 	/*
 	 * Returns the field to the left, if exists.
 	 */
