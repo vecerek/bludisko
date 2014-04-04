@@ -17,22 +17,22 @@ Specifikace bludiště:
 
 - v bludišti jsou tyto základní typy stavebních objektů:
   zeď - hráč nemůže projít
-  brána - brána může být otevřená nebo zavřená; hráč může projít otevřenou bránou; zavřenou bránu může hráč otevřít       klíčem, po použití klíč mizí a brána zůstává otevřená
-  klíč - hráč může zvednout a schovat, při pokusu o průchod zavřenou bránou tuto bránu otevírá
-  cíl - je pouze jeden v bludišti; hráč musí dosáhnout cílového políčka
+  - brána - brána může být otevřená nebo zavřená; hráč může projít otevřenou bránou; zavřenou bránu může hráč otevřít       klíčem, po použití klíč mizí a brána zůstává otevřená
+  - klíč - hráč může zvednout a schovat, při pokusu o průchod zavřenou bránou tuto bránu otevírá
+  - cíl - je pouze jeden v bludišti; hráč musí dosáhnout cílového políčka
 
 Hráč:
 
 - objekt pohybující se po bludišti; při startu je umístěn na některé z volných polí (můžete vyzkoušet různé strategie     umisťování hráčů)
 - je ovládán uživatelem, pohyb je řízen textovými příkazy:
-  step - hráč udělá jeden krok dopředu (pokud je to možné); příkaz go je pak tvořen sekvencí příkazů step
-  go - hráč jde rovně dokud nenarazí na jiný objekt (brána, zeď, klíč, jiný hráč)
-  stop - zastaví pohyb hráče (pokud již stojí, neprovede nic)
-  left - hráč se otočí doleva
-  right - hráč se otočí doprava
-  take - hráč vezme klíč (pokud je na políčku před ním)
-  open - hráč otevře bránu klíčem (pokud stojí před bránou a má klíč)
-  keys - vypíše počet klíčů aktuálně vlastněných hráčem
+  - step - hráč udělá jeden krok dopředu (pokud je to možné); příkaz go je pak tvořen sekvencí příkazů step
+  - go - hráč jde rovně dokud nenarazí na jiný objekt (brána, zeď, klíč, jiný hráč)
+  - stop - zastaví pohyb hráče (pokud již stojí, neprovede nic)
+  - left - hráč se otočí doleva
+  - right - hráč se otočí doprava
+  - take - hráč vezme klíč (pokud je na políčku před ním)
+  - open - hráč otevře bránu klíčem (pokud stojí před bránou a má klíč)
+  - keys - vypíše počet klíčů aktuálně vlastněných hráčem
 
 Hlídač:
 
