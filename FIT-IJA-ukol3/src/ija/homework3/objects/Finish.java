@@ -1,14 +1,14 @@
 package ija.homework3.objects;
 
-public class Key extends ija.homework3.tape.TapeObject {
+public class Finish extends ija.homework3.tape.TapeObject {
 	
-	public Key(String name) {
+	public Finish(String name) {
 		super(name);
 	}
 	
 	@Override
 	public boolean canSeize() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -28,6 +28,6 @@ public class Key extends ija.homework3.tape.TapeObject {
 	
 	@Override
 	public boolean isFinished() {
-		return false;
+		return true;
 	}
 }

@@ -15,6 +15,7 @@ public abstract class TapeObject
 	public abstract boolean open();
 	public abstract boolean canBeOpen();
 	public abstract boolean canBeTaken();
+	public abstract boolean isFinished();
 	
 	@Override
 	public boolean equals(Object o)
@@ -45,6 +46,8 @@ public abstract class TapeObject
 				return new Gate("g");
 			case "k":
 				return new Key("k");
+			case "f":
+				return new Finish("f");
 			default:
 				return null;
 		}

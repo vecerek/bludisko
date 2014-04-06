@@ -98,4 +98,11 @@ public class Tape {
 		else
 			return retPos;
 	}
+	/*
+	 * Prints actual state of the labyrinth
+	 */
+	public void printTape()
+	{
+		
+	}
 }
