@@ -101,8 +101,12 @@ public class Tape {
 	/*
 	 * Prints actual state of the labyrinth
 	 */
-	public void printTape()
+	public void printTape(int r, int c)
 	{
-		
+		for(int i = 0; i < (r*c); i++){
+			if(i % c == 0)
+				System.out.println();
+			System.out.print(this.fieldArray[i].objType);
+		}
 	}
 }

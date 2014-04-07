@@ -5,7 +5,12 @@ public class Key extends ija.homework3.tape.TapeObject {
 	public Key(String name) {
 		super(name);
 	}
-	
+
+	@Override
+	public String	objType(){
+		return "~";
+	}
+
 	@Override
 	public boolean canSeize() {
 		return false;

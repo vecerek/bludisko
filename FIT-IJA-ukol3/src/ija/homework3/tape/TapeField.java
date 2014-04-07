@@ -165,4 +165,11 @@ public class TapeField {
 		else
 			return null;
 	}
+	
+	public String objType(){
+		if(this.obj == null)
+			return " ";
+		else
+			return obj.objType();
+	}
 }

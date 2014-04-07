@@ -8,6 +8,14 @@ public class Gate extends ija.homework3.tape.TapeObject {
 	}
 
 	@Override
+	public String	objType(){
+		if(!this.opened)
+			return "G";
+		else
+			return "-";
+	}
+
+	@Override
 	public boolean canSeize() {
 		if(this.opened == false)
 			return false;

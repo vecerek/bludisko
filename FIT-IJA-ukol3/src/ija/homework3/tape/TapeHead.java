@@ -16,6 +16,7 @@ public class TapeHead {
 		this.id = id;
 		this.field = f;
 		this.keys = 0;
+		this.state = 0;
 	}
 	
 	public int id()
@@ -157,7 +158,7 @@ public class TapeHead {
 	}
 
 	/*
-	 * Rotates the head 90° left.
+	 * Rotates the head 90% left.
 	 */
 	public void left()
 	{
@@ -168,7 +169,7 @@ public class TapeHead {
 	}
 	
 	/*
-	 * Rotates the head 90° right.
+	 * Rotates the head 90% right.
 	 */
 	public void right()
 	{

@@ -6,6 +6,10 @@ public class Wall extends ija.homework3.tape.TapeObject {
 		super(name);
 	}
 
+	public String objType(){
+		return "#";
+	}
+	
 	@Override
 	public boolean canSeize() {
 		return false;

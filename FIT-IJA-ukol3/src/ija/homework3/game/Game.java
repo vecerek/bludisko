@@ -1,10 +1,6 @@
 package ija.homework3.game;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 import ija.homework3.tape.*;
 
@@ -19,9 +15,9 @@ public class Game {
 		
 	}
 	
-	public void startGame()
+	public void startGame(String map)
 	{
-        File file = new File("../../../../examples/bludisko1.txt");
+        File file = new File("../examples/"+map);
         StringBuffer buff = new StringBuffer();
         String tmpString;
         int separatorPos;
@@ -81,7 +77,7 @@ public class Game {
 	
 	public void show()
 	{
-		
+		playGround.printTape(this.R, this.C);
 	}
 	
 
