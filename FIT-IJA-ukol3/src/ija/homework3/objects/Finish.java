@@ -7,6 +7,11 @@ public class Finish extends ija.homework3.tape.TapeObject {
 	}
 	
 	@Override
+	public String	objType(){
+		return "F";
+	}
+	
+	@Override
 	public boolean canSeize() {
 		return true;
 	}

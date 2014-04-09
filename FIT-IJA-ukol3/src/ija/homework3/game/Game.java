@@ -12,7 +12,6 @@ public class Game {
     
     public Game()
 	{
-		
 	}
 	
 	public void startGame(String map)
@@ -59,20 +58,22 @@ public class Game {
         String content = (buff.toString()).replaceAll("\\s+", "");
         
         try {
-            if( (content.length() != (this.R * this.C)) ||
+        	System.out.println(this.R + this.C + content);
+        	if( (content.length() != (this.R * this.C)) ||
                 (this.R < 20 || this.R > 50) ||
                 (this.C < 20 || this.C > 50)
               )
                 throw new TapeOutOfSize("The playground exceeds maximal size in either way.");
-            else
+            else{
+
                 this.playGround = new Tape(this.C, this.R, 1, content);
-            
+            }
             this.playGround.createHead(1);
         }
         catch(TapeOutOfSize e) {
             e.toString();
         }
-  }
+	}
 
 	
 	public void show()

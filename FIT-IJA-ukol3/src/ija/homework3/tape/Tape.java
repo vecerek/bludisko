@@ -106,7 +106,7 @@ public class Tape {
 		for(int i = 0; i < (r*c); i++){
 			if(i % c == 0)
 				System.out.println();
-			System.out.print(this.fieldArray[i].objType);
+			System.out.print(this.fieldArray[i].objType());
 		}
 	}
 }

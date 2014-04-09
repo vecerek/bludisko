@@ -1,5 +1,7 @@
 package ija.homework3.tape;
 
+import ija.homework3.objects.*;
+
 public class TapeField {
 	protected int p;
 	protected TapeObject obj;

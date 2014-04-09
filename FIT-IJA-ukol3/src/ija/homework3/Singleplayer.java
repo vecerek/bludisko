@@ -47,7 +47,7 @@ public class Singleplayer {
         //System.out.println(line);
         Game game1 = new Game();
         game1.startGame(param);
-        
+        game1.show();
     }//main ends here
 }
 
