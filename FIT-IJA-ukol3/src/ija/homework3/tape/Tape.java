@@ -53,6 +53,7 @@ public class Tape {
 			{
 				TapeHead head = new TapeHead(i, fieldArray[j]);
 				fieldArray[j].seize(head);
+				this.headArray[0] = head;
 				return head;
 			}
 		}
@@ -103,10 +104,34 @@ public class Tape {
 	 */
 	public void printTape(int r, int c)
 	{
-		for(int i = 0; i < (r*c); i++){
+		for(int i = 0; i < (r*c); i++)
+		{
 			if(i % c == 0)
 				System.out.println();
-			System.out.print(this.fieldArray[i].objType());
+			if(this.fieldArray[i].head == null)
+				System.out.print(this.fieldArray[i].objType());
+			else
+				printHead(this.fieldArray[i]);
+		}
+		System.out.print("\n");
+	}
+	
+	protected void printHead(TapeField field)
+	{
+		switch(field.headOrientation())
+		{
+			case 0:
+				System.out.print("^");
+				break;
+			case 1:
+				System.out.print(">");
+				break;
+			case 2:
+				System.out.print("v");
+				break;
+			case 3:
+				System.out.print("<");
+				break;
 		}
 	}
 }

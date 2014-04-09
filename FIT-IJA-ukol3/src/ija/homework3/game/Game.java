@@ -17,9 +17,9 @@ public class Game {
     	this.playGround = null;
 	}
 	
-	public void startGame(String map)
+	public TapeHead startGame(String map)
 	{
-        File file = new File("../examples/"+map);
+        File file = new File("examples/"+map);
         StringBuffer buff = new StringBuffer();
         String tmpString;
         int separatorPos;
@@ -61,7 +61,7 @@ public class Game {
         String content = (buff.toString()).replaceAll("\\s+", "");
         
         try {
-        	System.out.println(this.R + this.C + content);
+        	//System.out.println(this.R + this.C + content);
         	if( (content.length() != (this.R * this.C)) ||
                 (this.R < 20 || this.R > 50) ||
                 (this.C < 20 || this.C > 50)
@@ -71,11 +71,13 @@ public class Game {
 
                 this.playGround = new Tape(this.C, this.R, 1, content);
             }
-            this.playGround.createHead(1);
+            return this.playGround.createHead(1);
         }
         catch(TapeOutOfSize e) {
             e.toString();
         }
+        
+        return null;
 	}
 
 	/*

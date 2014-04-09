@@ -205,7 +205,7 @@ public class TapeHead {
 		{
 			fieldTmp.open();
 			this.keys--;
-			return seizeField(fieldTmp);
+			return true;
 		}
 		else
 			return false;

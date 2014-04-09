@@ -168,4 +168,9 @@ public class TapeField {
 		else
 			return obj.objType();
 	}
+	
+	public int headOrientation()
+	{
+		return this.head.state;
+	}
 }

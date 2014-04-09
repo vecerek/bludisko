@@ -8,11 +8,11 @@ public class Gate extends ija.homework3.tape.TapeObject {
 	}
 
 	@Override
-	public String	objType(){
+	public String objType(){
 		if(!this.opened)
 			return "G";
 		else
-			return "-";
+			return "_";
 	}
 
 	@Override
