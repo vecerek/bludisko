@@ -1,6 +1,6 @@
 package ija.homework3.tape;
 
-import ija.homework3.objects.*;
+//import ija.homework3.objects.*;
 
 public class TapeField {
 	protected int p;
@@ -97,12 +97,6 @@ public class TapeField {
 	/* Homework 2*/
 	public TapeField rightField()
 	{
-		/*	homework2 body
-		 * 	if((this.p+1) < this.tape.fieldArray.length)
-				return this.tape.fieldArray[this.p + 1];
-			else
-				return null;
-		*/
 		/* Homework 3 body */
 		int rightPos = this.tape.isRight(this.p);
 		if(rightPos != -1)

@@ -84,35 +84,42 @@ public class TapeHead {
 
 	/* Homework3 */
 	/*
-	 * Checks, if the head can take a step.
-	 * Returns true and takes the step, if the next field is seizable.
-	 * Otherwise returns false.
+	 * May take a step to the next field if possible.
 	 */
 	public boolean step()
+	{		
+		return this.makeStep(getNextField());
+	}
+	
+	/*
+	 * Depending on the head orientation, the method returns
+	 * the correct next field in its way.
+	 */
+	private TapeField getNextField()
 	{
-		TapeField fieldTmp = null;
+		TapeField tmp = null;
 		
 		switch(this.state)
 		{
 			/* North orientation */
 			case 0:
-				fieldTmp = this.field.topField();
+				tmp = this.field.topField();
 				break;
 			/* East orientation */
 			case 1:
-				fieldTmp = this.field.rightField();
+				tmp = this.field.rightField();
 				break;
 			/* South orientation */
 			case 2:
-				fieldTmp = this.field.lowerField();
+				tmp = this.field.lowerField();
 				break;
 			/* West orientation */
 			case 3:
-				fieldTmp = this.field.leftField();
+				tmp = this.field.leftField();
 				break;
 		}
 		
-		return this.makeStep(fieldTmp);
+		return tmp;
 	}
 	
 	/*
@@ -124,20 +131,11 @@ public class TapeHead {
 		if(fieldTmp != null)
 		{
 			if(fieldTmp.canSeize())
-			{
 				return seizeField(fieldTmp);
-			}
-			else if(fieldTmp.canBeOpen() && (this.keys > 0))
-			{
-				fieldTmp.open();
-				this.keys--;
-				return seizeField(fieldTmp);
-			}
+			/*else if(fieldTmp.canBeOpen() && (this.keys > 0))
+				return false;
 			else if(fieldTmp.canBeTaken())
-			{
-				this.take(fieldTmp);
-				return seizeField(fieldTmp);
-			}
+				return false;*/
 			else
 				return false;
 		}
@@ -182,11 +180,35 @@ public class TapeHead {
 	/*
 	 * Adds a key and removes the object from the field.
 	 */
-	public void take(TapeField fieldTmp)
+	public boolean take()
 	{
-		this.addKeys(1);
-		fieldTmp.obj = null;
-		return;
+		TapeField tmp = getNextField();
+		
+		if(tmp.canBeTaken())
+		{
+			this.addKeys(1);
+			tmp.obj = null;
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	/*
+	 * Opens a gate.
+	 */
+	public boolean open()
+	{
+		TapeField fieldTmp = getNextField();
+		
+		if(fieldTmp.canBeOpen() && (this.keys > 0))
+		{
+			fieldTmp.open();
+			this.keys--;
+			return seizeField(fieldTmp);
+		}
+		else
+			return false;
 	}
 	
 	/*

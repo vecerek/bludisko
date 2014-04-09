@@ -12,6 +12,9 @@ public class Game {
     
     public Game()
 	{
+    	this.R = 0;
+    	this.C = 0;
+    	this.playGround = null;
 	}
 	
 	public void startGame(String map)
@@ -75,18 +78,20 @@ public class Game {
         }
 	}
 
-	
+	/*
+	 * Prints the tape's actual state.
+	 */
 	public void show()
 	{
 		playGround.printTape(this.R, this.C);
 	}
 	
-
+	/*
+	 * Defined own exception, which occurs, when the tape's
+	 * dimensions are out of the acceptable range.
+	 */
     public class TapeOutOfSize extends Exception
     {
-        /**
-		 * 
-		 */
 		private static final long serialVersionUID = 1L;
 
 		public TapeOutOfSize(String msg)
