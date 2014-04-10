@@ -235,4 +235,33 @@ public class TapeHead {
 		else
 			return false;
 	}
+	
+	/*
+	 * Returns the number of keys for testing 
+	 * purposes.
+	 */
+	public int testKeys()
+	{
+		return this.keys;
+	}
+	
+	/*
+	 * Leaves the actual field for testing 
+	 * purposes.
+	 */
+	public TapeHead testLeaveField()
+	{
+		TapeHead tmp = this.field.leave();
+		this.field = null;
+		return tmp;
+	}
+	
+	/*
+	 * Saves it's new position.
+	 * Used by teleport method.
+	 */
+	public void testSeizeField(TapeField field)
+	{
+		this.field = field;
+	}
 }

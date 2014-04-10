@@ -9,12 +9,14 @@ public class Game {
     protected int R; 
     protected int C;
     protected Tape playGround;
+    protected TapeHead player;
     
     public Game()
 	{
     	this.R = 0;
     	this.C = 0;
     	this.playGround = null;
+    	this.player = null;
 	}
 	
 	public TapeHead startGame(String map)
@@ -71,7 +73,8 @@ public class Game {
 
                 this.playGround = new Tape(this.C, this.R, 1, content);
             }
-            return this.playGround.createHead(1);
+        	this.player = this.playGround.createHead(1);
+            return this.player;
         }
         catch(TapeOutOfSize e) {
             e.toString();
@@ -86,6 +89,20 @@ public class Game {
 	public void show()
 	{
 		playGround.printTape(this.R, this.C);
+	}
+	
+	/*
+	 * Telports the player to another field 
+	 * for testing purposes.
+	 */
+	public void teleportPlayer(int position)
+	{
+		//leaves the actual field, all connections
+		this.player = this.player.testLeaveField();
+		//assigns the head to the field
+		this.playGround.fieldArray[position].seize(this.player);
+		//assigns the field to the head
+		this.player.testSeizeField(this.playGround.fieldArray[position]);
 	}
 	
 	/*

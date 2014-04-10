@@ -30,9 +30,4 @@ public class Key extends ija.homework3.tape.TapeObject {
 	public boolean canBeTaken() {
 		return true;
 	}
-	
-	@Override
-	public boolean isFinished() {
-		return false;
-	}
 }

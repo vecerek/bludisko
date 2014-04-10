@@ -15,7 +15,6 @@ public abstract class TapeObject
 	public abstract boolean open();
 	public abstract boolean canBeOpen();
 	public abstract boolean canBeTaken();
-	public abstract boolean isFinished();
 	public abstract String	objType();
 
 	@Override

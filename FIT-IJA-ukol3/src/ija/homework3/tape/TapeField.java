@@ -54,7 +54,7 @@ public class TapeField {
 	{
 		if(this.obj != null || this.head != null)
 		{
-			TapeHead tmp = head;
+			TapeHead tmp = this.head;
 			this.head = null;
 			return tmp;
 		}
