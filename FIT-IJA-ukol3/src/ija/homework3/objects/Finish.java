@@ -7,7 +7,7 @@ public class Finish extends ija.homework3.tape.TapeObject {
 	}
 	
 	@Override
-	public String	objType(){
+	public String objType(){
 		return "F";
 	}
 	

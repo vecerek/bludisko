@@ -26,11 +26,17 @@ public class TapeField {
 		this.tape = tape;
 	}
 	
+	/*
+	 * Returns the field's position.
+	 */
 	public int position()
 	{
 		return this.p;
 	}
 	
+	/*
+	 * Seizes field.
+	 */
 	public boolean seize(TapeHead head)
 	{
 		if(canSeize()) {
@@ -41,6 +47,9 @@ public class TapeField {
 			return false;
 	}
 	
+	/*
+	 * Makes the head leave it's field.
+	 */
 	public TapeHead leave()
 	{
 		if(this.obj != null || this.head != null)
@@ -53,6 +62,9 @@ public class TapeField {
 			return null;
 	}
 	
+	/*
+	 * Checks, if the field can be seized.
+	 */
 	public boolean canSeize()
 	{
 		if (this.obj == null && this.head == null)
@@ -65,6 +77,9 @@ public class TapeField {
 		}
 	}
 	
+	/*
+	 * Opens the closed gate.
+	 */
 	public boolean open()
 	{
 		if (this.obj != null && this.obj.open())
@@ -105,7 +120,9 @@ public class TapeField {
 			return null;
 		
 	}
-	
+	/*
+	 * Checks, if the field contains a closed gate.
+	 */
 	public boolean canBeOpen()
 	{
 		if(this.obj == null)
@@ -117,7 +134,9 @@ public class TapeField {
 	}
 	
 	/* Homework 3 */
-	
+	/*
+	 * Checks, if the field contains a key, or not.
+	 */
 	public boolean canBeTaken()
 	{
 		if(this.obj == null)
@@ -150,6 +169,7 @@ public class TapeField {
 		else
 			return null;
 	}
+	
 	/*
 	 *  Returns the field to the bottom, if exists.
 	 */
@@ -162,6 +182,9 @@ public class TapeField {
 			return null;
 	}
 	
+	/*
+	 * Returns the type of the object on the field. 
+	 */
 	public String objType(){
 		if(this.obj == null)
 			return " ";
@@ -169,6 +192,9 @@ public class TapeField {
 			return obj.objType();
 	}
 	
+	/*
+	 * Returns the players's orientation on the field.
+	 */
 	public int headOrientation()
 	{
 		return this.head.state;

@@ -46,11 +46,17 @@ public class TapeHead {
 	}
 	
 	/* Homework2 */
+	/*
+	 * Returns the field seized by the head.
+	 */
 	public TapeField seizedField()
 	{
 		return this.field;
 	}
 	
+	/*
+	 * Adds n keys into the backpack.
+	 */
 	public void addKeys(int n)
 	{
 		this.keys += n;
@@ -217,5 +223,16 @@ public class TapeHead {
 	public void keys()
 	{
 		System.out.println(this.keys);
+	}
+	
+	/*
+	 * Asks the field, if it's the finishing one.
+	 */
+	public boolean finished()
+	{
+		if(this.field.objType() == "F")
+			return true;
+		else
+			return false;
 	}
 }

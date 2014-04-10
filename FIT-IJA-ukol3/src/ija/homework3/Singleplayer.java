@@ -19,21 +19,23 @@ public class Singleplayer {
     	TapeHead player = start(game1);
         game1.show();
     	
-    	boolean enough = false;
+    	String enough = "";
     	//reading commands until the close command
-    	while(!enough)
+    	while(enough == "")
     	{
     		enough = execCommand(game1, player);
     	}
-    	
-    	byeByeMessage();
+    	if(enough == "close")
+    		byeByeMessage();
+    	else if(enough == "finish")
+    		congratsMessage();
     	
     }//main ends here
     
     /*
      * Lists all possible labyrinths to select from
      */
-    public static void listFiles()
+    private static void listFiles()
     {
     	File f = new File("examples/");
     	String[] fileNames = f.list();
@@ -50,7 +52,7 @@ public class Singleplayer {
     /*
      * Gives a warm welcome to the gamer.
      */
-    public static void welcomeMessage()
+    private static void welcomeMessage()
     {
     	String newLine = System.getProperty("line.separator");
     	
@@ -64,7 +66,7 @@ public class Singleplayer {
      * the appropriate labyrinth.
      * Returns the created head(player).
      */
-    public static TapeHead start(Game game1)
+    private static TapeHead start(Game game1)
     {
     	BufferedReader buff = new BufferedReader(new InputStreamReader(System.in));
         String line = "";
@@ -91,7 +93,7 @@ public class Singleplayer {
     /*
      * Reads the command and executes it.
      */
-    public static boolean execCommand(Game game1, TapeHead player)
+    private static String execCommand(Game game1, TapeHead player)
     {
     	BufferedReader buff = new BufferedReader(new InputStreamReader(System.in));
     	
@@ -122,7 +124,12 @@ public class Singleplayer {
         			break;
         		case "step":
         			if(player.step())
-        				System.out.println("OK.");
+        			{
+        				if(player.finished())
+        					return "finish";
+        				else
+        					System.out.println("OK.");
+        			}
         			else
         				System.out.println("NOT OK.");
         			break;
@@ -133,7 +140,7 @@ public class Singleplayer {
         			game1.show();
         			break;
         		case "close":
-        			return true;
+        			return "close";
         		default:
         			System.out.println("Unsupported command.");
         	}
@@ -143,15 +150,23 @@ public class Singleplayer {
     		System.exit(1);
     	}
     	
-    	return false;
+    	return "";
     }
     
     /*
      * Message after closing the game.
      */
-    public static void byeByeMessage()
+    private static void byeByeMessage()
     {
     	System.out.println("The game has been closed.");
+    }
+    
+    /*
+     * Congratulation Message
+     */
+    private static void congratsMessage()
+    {
+		System.out.println("YOU WON!");
     }
 }
 
