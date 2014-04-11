@@ -1,44 +1,66 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project name="IJA-2014" default="compile" basedir=".">
-	<property name="src" value="src"/>
-  <property name="build" value="build"/>
-  <property name="dest" value="dest"/>
-  <property name="lib" value="lib"/>
-  <property name="doc" value="doc"/>
-	<property name="test" value="test"/>
-	
-	<target name="init">
-    <delete dir="${build}"/>
-    <delete dir="${doc}"/>
-    <delete dir="${dest}"/>
-    <mkdir dir="${build}"/>
-    <mkdir dir="${doc}"/>
-    <mkdir dir="${dest}"/>
-  </target>
-	
-  <target name="compile" depends="init" description="Compiles the .java files" >
-    <!-- javac -->
-    <javac includeantruntime="false" debug="true" srcdir="${src}" destdir="${build}" />
-    <!-- .jar file -->
-    <jar destfile="${dest}/ija2014.jar" basedir="${build}">
-      <fileset dir="${lib}"/>
-      <manifest>
-        <attribute name="Main-Class" value="ija.homework3.Game"/>
-      </manifest>
-    </jar>  
-    <!-- Java doc -->
-    <javadoc sourcepath="${src}"  destdir="${doc}" />
-  </target>
-	
-  <!-- Run -->
-  <target name="run">
-		<java dir="${dest}" jar="${dest}/ija2014.jar" fork="true"/>
-	</target>
-	
-  <!-- Clean -->
-	<target name="clean">
-		<delete dir="${build}"/>
-    <delete dir="${dest}"/>
-	</target>
-  
+<?xml version="1.0" encoding="UTF-8" ?>
+<project basedir="." default="build" name="IJA-2014">
+    <description> Homework 3 - IJA </description>
+
+    <property name="src" location="src"/>
+    <property name="build" location="build"/>
+    <property name="dest" location="dest"/>
+    <property name="lib" location="lib"/>
+    <property name="doc" location="doc"/>
+    <property name="examples" location="examples"/>
+
+
+    <!-- CLEAN -->
+    <target name="clean">
+        <delete includeemptydirs="true">
+            <fileset dir="${build}" includes="**/*"/>
+            <fileset dir="${dest}" includes="**/*"/>
+            <fileset dir="${doc}" includes="**/*" excludes="**/architecture.pdf"/>
+        </delete>
+    </target>
+    
+    <!-- COMPILE -->
+    <target name="compile" depends="clean" description="Compile">
+        <javac srcdir="${src}" destdir="${build}" includeantruntime="false" encoding="UTF-8" classpath="lib/junit-4.10.jar">
+        </javac>
+
+        <javac srcdir="${examples}" destdir="${build}" includeantruntime="false" encoding="UTF-8" classpath="lib/junit-4.10.jar">
+        </javac>
+        
+        <!-- DOC -->
+        <javadoc sourcepath="${src}" destdir="${doc}" encoding="UTF-8" charset="UTF-8" classpath="lib/junit-4.10.jar">
+        </javadoc>
+        
+        <!-- JAR -->
+        <jar destfile="${dest}/ija2014.jar" basedir="${build}">
+            <manifest>
+                <attribute name="Main-Class" value="ija.homework3.Singleplayer"/>
+               
+            </manifest>
+        </jar>
+
+        <!-- MAKE DIR STRUCTURE AND COPY FILES FOR JAR -->
+        <mkdir dir="${dest}/examples"/>
+        <copy file="${examples}/bludisko1.txt" todir="${dest}/examples"/>
+        <copy file="${examples}/bludisko2.txt" todir="${dest}/examples"/>
+        <copy file="${examples}/bludisko3.txt" todir="${dest}/examples"/>
+
+    </target>
+
+    <!-- TEST - JUNIT  -->
+    <target name="test">
+        <junit printsummary="withOutAndErr" fork="true">
+            <test name="ija.homework3.Homework3"/>
+            <classpath>
+                <pathelement path="build"/>
+                <pathelement location="./lib/junit-4.10.jar"/>
+            </classpath>
+    </junit>
+    </target>
+
+    <!-- RUN -->
+    <target name="run">
+        <java jar="${dest}/ija2014.jar" classpath="${dest}" dir="${dest}" fork="true" />
+    </target>
+
 </project>
