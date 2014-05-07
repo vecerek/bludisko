@@ -89,6 +89,7 @@ public class Server {
 			Map<String, TapeHead> clientsPlayers = new HashMap<String, TapeHead>();
 			clientsPlayers.put(clientName, player);
 			this.clientsInGames.put(gameName, clientsPlayers);
+			clientsPlayers.clear();
 		}
 		catch (Exception e) {
 			System.err.println(e.getMessage());
