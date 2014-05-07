@@ -82,6 +82,11 @@ public class Game {
         
         return null;
 	}
+	
+	public TapeHead addPlayer()
+	{
+		return null;
+	}
 
 	/*
 	 * Prints the tape's actual state.

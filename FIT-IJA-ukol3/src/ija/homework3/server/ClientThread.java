@@ -11,11 +11,15 @@ import java.net.*;
  */
 public class ClientThread extends Thread {
 	
+	private Server server;
 	private Socket socket;
+	private String name;
 	
-	public ClientThread(Socket s){
+	public ClientThread(Server server, Socket s, String name){
 		super();
+		this.server = server;
 		this.socket = s;
+		this.name = name;
 	}
 	
 	/**
