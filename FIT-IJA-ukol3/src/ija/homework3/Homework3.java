@@ -31,7 +31,7 @@ public class Homework3 {
     
     @Test
     public void testWallsAndTakingKeys() {
-    	Game game = new Game();
+    	Game game = new Game(5);
     	TapeHead player = game.startGame("bludisko1.txt");
     	
     	assertTrueFalse(game, player, "STEP", false);
@@ -56,7 +56,7 @@ public class Homework3 {
     
     @Test
     public void testOpeningGates() {
-    	Game game = new Game();
+    	Game game = new Game(5);
     	TapeHead player = game.startGame("bludisko1.txt");
     	//teleporting player next to a gate, orientation: north
     	game.teleportPlayer(78);
@@ -88,7 +88,7 @@ public class Homework3 {
     
     @Test
     public void testFinish() {
-    	Game game = new Game();
+    	Game game = new Game(5);
     	TapeHead player = game.startGame("bludisko1.txt");
     	//teleporting player close to the finishing field, orientation: north
     	game.teleportPlayer(396);

@@ -8,7 +8,11 @@ import ija.homework3.game.*;
 import ija.homework3.tape.*;
 
 /**
- * A socket server for handling up to 4 clients.
+ * A simple socket server.
+ * There can be created countless games and the number of
+ * players in each game is limited up to 4. To handle so 
+ * many games and clients, it's essential to track the 
+ * belongings of each player to his/her game.
  * @author xvecer17
  * 
  */
@@ -16,13 +20,24 @@ public class Server {
 
 	private ServerSocket ss;
 	private int port;
+	//Each client has its own ID.
 	private int clientCounter;
+	//Each game has its own ID.
 	private int gameCounter;
+	
+	//Pairs of gameIDs and Game objects.
 	private Map<String, Game> games;
+	//List of ClientThreads.
 	private List<ClientThread> clients;
+	
+	/**
+	 * The clientsInGames is that data structure, which
+	 * maps the name of the game to an other map of client IDs
+	 * and TapeHead(actual player) objects.
+	 */
 	private Map<String, Map<String, TapeHead>> clientsInGames;
 	
-	int MaxPlayerCount = 4;
+	private static final int MAX_PLAYERS = 4;
 	
 	public Server(int p)
 	{
@@ -35,12 +50,10 @@ public class Server {
 	}
 	
 	/**
-	 * Starting server, waiting for up to 4 connections.
-	 * A new thread is created by every connection, which
-	 * represents the communication channel with the client.
-	 * The client's messages are interpreted into the actual
-	 * moves in the game, which are then executed and the
-	 * new scene is sent back to the client.
+	 * Starts the server. Establishes connection to every client.
+	 * Tags the clients with unique ID. Forks a new thread to handle
+	 * client-server communication. Adds the new thread to the list
+	 * of ClientThreads.
 	 * @throws IOException
 	 */
 	public void start() throws IOException
@@ -71,10 +84,25 @@ public class Server {
 	    }
 	}
 	
-	public boolean createNewGame(String clientName, String map)
+	/**
+	 * Creates new Game object. Tags it with a unique ID.
+	 * Puts the pair of gameID and object into the map.
+	 * Starts the game and creates the first player. Puts
+	 * the pair of clientID and player object into a map.
+	 * Puts that map into the clientsInGames map in pair
+	 * with the gameID.
+	 * 
+	 * @param clientName	client's ID.
+	 * @param map			chosen level of labyrinth.
+	 * @return true/false   is it able to create a new game or not.
+	 */
+	public boolean createNewGame(String clientName, String map, int speed)
 	{
 		try {
-			Game game = new Game();
+			String client = clientName.substring("Client".length());
+			int ID = Integer.parseInt(client);
+			
+			Game game = new Game(speed);
 			String gameName;
 		
 			if(this.gameCounter < 10)
@@ -84,6 +112,8 @@ public class Server {
 			this.gameCounter++;
 		
 			this.games.put(gameName, game);
+			ClientThread thread = this.clients.get(--ID);
+			thread.joinGame(gameName, game.speed);
 		
 			TapeHead player = game.startGame(map);
 			Map<String, TapeHead> clientsPlayers = new HashMap<String, TapeHead>();
@@ -99,24 +129,149 @@ public class Server {
 		return true;
 	}
 	
+	/**
+	 * Gets the number of players in the game. If it's possible, 
+	 * the client connects and a new player is placed into the game.
+	 * 
+	 * @param clientName	client's ID.
+	 * @param gameName		games's ID.
+	 * @return true/false	is the client able to connect to the game.
+	 */
 	public boolean connectToGame(String clientName, String gameName)
 	{
-		Game game = this.games.get(gameName);
-		int size = this.clientsInGames.size();
+		Map<String, TapeHead> clientsPlayers = new HashMap<String, TapeHead>();
+		clientsPlayers = this.clientsInGames.get(gameName);
+		int size = clientsPlayers.size();
 		
-		if(size < MaxPlayerCount)
+		if(size < MAX_PLAYERS)
 		{
-			TapeHead player = game.addPlayer();
-			Map<String, TapeHead> clientsPlayers = new HashMap<String, TapeHead>();
-			clientsPlayers = this.clientsInGames.get(gameName);
+			Game game = this.games.get(gameName);
+			TapeHead player = game.addPlayer(++size);
 			clientsPlayers.put(clientName, player);
 			this.clientsInGames.put(gameName, clientsPlayers);
+			
+			//clears the temporary map.
 			clientsPlayers.clear();
 			
 			return true;
 		}
 		else
 			return false;
+	}
+	
+	public boolean execCommand(String clientName, String gameName, String command)
+    {
+		TapeHead player = this.getPlayer(clientName, gameName);
+				
+    	switch(command)
+       	{
+       		case "take":
+       			if(player.take())
+       				return true;
+       			else
+       				return false;
+       		case "open":
+       			if(player.open())
+       				return true;
+       			else
+       				return false;
+       		case "left":
+       			player.left();
+       			return true;
+       		case "right":
+       			player.right();
+       			return true;
+       		case "step":
+       			if(player.step())
+       			{
+       				//if player's won the game
+       				if(player.finished())
+       					//TODO: notify all clients in the game
+       				return true;
+       			}
+       			else
+       				return false;
+       		default:
+       			return false;
+      	}
+    }
+	
+	public void refreshMap(String gameName)
+	{
+		String key = "";
+		String client = "";
+		int ID;
+		List<ClientThread> InGamePlayers = new ArrayList<ClientThread>();
+		Map.Entry<String, TapeHead> pairs;
+		
+		Map<String, TapeHead> players = new HashMap<String, TapeHead>();
+		players = this.clientsInGames.get(gameName);
+		
+		Iterator<Map.Entry<String, TapeHead>> it = players.entrySet().iterator();
+	    while(it.hasNext())
+	    {
+	        pairs = (Map.Entry<String, TapeHead>)it.next();
+	        key = pairs.getKey();
+	        
+	        client = key.substring("Client".length());
+			ID = Integer.parseInt(client);
+			
+			InGamePlayers.add(this.clients.get(--ID));
+	    }
+	    
+	    ClientThread oneClient;
+	    String gameField = this.getGameField(gameName);
+	    
+	    Iterator<ClientThread> CTit = InGamePlayers.listIterator();
+		while(CTit.hasNext())
+		{
+			oneClient = CTit.next();
+			oneClient.sendGameField(gameField);			
+		}
+	}
+	
+	public void changeStat(String clientName, String gameName, boolean success)
+	{
+		TapeHead player = this.getPlayer(clientName, gameName);
+		player.increaseRate(success);
+	}
+	
+	public String getGameField(String gameName)
+	{
+		Game game = this.games.get(gameName);
+		return game.getLabyrinthState();
+	}
+	
+	public int getKeys(String clientName, String gameName)
+	{
+		TapeHead player = this.getPlayer(clientName, gameName);
+		return player.numberOfKeys();
+	}
+	
+	public int getKills(String clientName, String gameName)
+	{
+		TapeHead player = this.getPlayer(clientName, gameName);
+		return player.getKills();
+	}
+	
+	public double getRate(String clientName, String gameName)
+	{
+		TapeHead player = this.getPlayer(clientName, gameName);
+		return player.getRate();
+	}
+	
+	private TapeHead getPlayer(String clientName, String gameName)
+	{
+		Map<String, TapeHead> clientsPlayers = new HashMap<String, TapeHead>();
+		clientsPlayers = this.clientsInGames.get(gameName);
+		
+		try {
+			return clientsPlayers.get(clientName);
+		}
+		finally {
+			//clears the temporary map.
+			clientsPlayers.clear();
+		}
 	}
     
     /**

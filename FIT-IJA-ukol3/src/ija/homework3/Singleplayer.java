@@ -15,7 +15,7 @@ public class Singleplayer {
     	welcomeMessage();
     	listFiles();
     	
-    	Game game1 = new Game();
+    	Game game1 = new Game(5);
     	TapeHead player = start(game1);
         game1.show();
     	
@@ -58,7 +58,7 @@ public class Singleplayer {
     	
     	System.out.println("Welcome to the labyrinth kid!"+newLine+
     	"To begin your journey choose one map by typing: game <labyrinth name>"+newLine+
-    	"-where <labyrinth name> is the choosen map."+newLine+newLine+"-Map list:");
+    	"-where <labyrinth name> is the chosen map."+newLine+newLine+"-Map list:");
     }
     
     /*

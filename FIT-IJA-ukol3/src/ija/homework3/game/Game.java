@@ -10,11 +10,13 @@ public class Game {
     protected int C;
     protected Tape playGround;
     protected TapeHead player;
+    public int speed;
     
-    public Game()
+    public Game(int speed)
 	{
     	this.R = 0;
     	this.C = 0;
+    	this.speed = 5;
     	this.playGround = null;
     	this.player = null;
 	}
@@ -83,9 +85,15 @@ public class Game {
         return null;
 	}
 	
-	public TapeHead addPlayer()
+	/**
+	 * Adds a new player into the game, with a unique ID.
+	 * 
+	 * @param ID			the player's ID.
+	 * @return TapeHead		new player in the game.
+	 */
+	public TapeHead addPlayer(int ID)
 	{
-		return null;
+		return this.playGround.createHead(ID);
 	}
 
 	/*
@@ -93,11 +101,16 @@ public class Game {
 	 */
 	public void show()
 	{
-		playGround.printTape(this.R, this.C);
+		this.playGround.printTape(this.R, this.C);
+	}
+	
+	public String getLabyrinthState()
+	{
+		return this.playGround.sendTape(this.R, this.C);
 	}
 	
 	/*
-	 * Telports the player to another field 
+	 * Teleports the player to another field 
 	 * for testing purposes.
 	 */
 	public void teleportPlayer(int position)

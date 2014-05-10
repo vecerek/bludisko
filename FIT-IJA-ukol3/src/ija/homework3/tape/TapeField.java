@@ -67,14 +67,33 @@ public class TapeField {
 	 */
 	public boolean canSeize()
 	{
-		if (this.obj == null && this.head == null)
+		if(this.obj == null && this.head == null)
 			return true;
 		else
 		{
-			if (this.head == null && this.obj.canSeize())
+			if(this.head == null && this.obj.canSeize())
 				return true;
 			return false;
 		}
+	}
+	
+	public boolean canKill()
+	{
+		if(this.obj.canSeize() && this.head != null)
+			return true;
+		else
+			return false;
+	}
+	
+	public void kill()
+	{
+		this.head.die();
+		this.head = null;
+	}
+	
+	public int getPlayerID()
+	{
+		return this.head.id();
 	}
 	
 	/*

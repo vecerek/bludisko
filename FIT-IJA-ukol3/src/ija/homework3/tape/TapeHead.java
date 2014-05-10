@@ -1,10 +1,16 @@
 package ija.homework3.tape;
 
 public class TapeHead {
-	protected int id;
+	
+	protected int id;		//possible values: 1..4, 1=Ironman, 2=Captain America, 3=Hulk, 4=Thor
 	protected TapeField field;
 	protected int keys;
 	protected int state;	//possible values: 0..3, 0=north 3=west orientation
+	protected boolean alive;
+	
+	private int passed;
+	private int failed;
+	private int kills;
 	
 	public TapeHead(int id)
 	{
@@ -17,6 +23,11 @@ public class TapeHead {
 		this.field = f;
 		this.keys = 0;
 		this.state = 0;
+		this.alive = true;
+		
+		this.passed = 0;
+		this.failed = 0;
+		this.kills = 0;
 	}
 	
 	public int id()
@@ -52,6 +63,16 @@ public class TapeHead {
 	public TapeField seizedField()
 	{
 		return this.field;
+	}
+	
+	public void die()
+	{
+		this.alive = false;
+	}
+	
+	public boolean isAlive()
+	{
+		return this.alive;
 	}
 	
 	/*
@@ -138,10 +159,12 @@ public class TapeHead {
 		{
 			if(fieldTmp.canSeize())
 				return seizeField(fieldTmp);
-			/*else if(fieldTmp.canBeOpen() && (this.keys > 0))
-				return false;
-			else if(fieldTmp.canBeTaken())
-				return false;*/
+			else if(fieldTmp.canKill())
+			{
+				fieldTmp.kill();
+				this.kills++;
+				return this.makeStep(fieldTmp);
+			}
 			else
 				return false;
 		}
@@ -225,6 +248,12 @@ public class TapeHead {
 		System.out.println(this.keys);
 	}
 	
+	public int numberOfKeys()
+	{
+		this.passed++;
+		return this.keys;
+	}
+	
 	/*
 	 * Asks the field, if it's the finishing one.
 	 */
@@ -234,6 +263,24 @@ public class TapeHead {
 			return true;
 		else
 			return false;
+	}
+	
+	public void increaseRate(boolean success)
+	{
+		if(success)
+			this.passed++;
+		else
+			this.failed++;
+	}
+	
+	public double getRate()
+	{
+		return 100.0/(1 + (double)this.failed/this.passed);
+	}
+	
+	public int getKills()
+	{
+		return this.kills;
 	}
 	
 	/*

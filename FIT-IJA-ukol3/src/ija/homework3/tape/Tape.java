@@ -47,13 +47,18 @@ public class Tape {
 	
 	public TapeHead createHead(int i)
 	{
+		//Gets the first free position from the Array
+		int k = 0;
+		while(this.headArray[k] != null)
+			k++;
+		
 		for(int j = 0; j < this.fieldArray.length; j++)
 		{
 			if(this.fieldArray[j].canSeize())
 			{
 				TapeHead head = new TapeHead(i, fieldArray[j]);
 				fieldArray[j].seize(head);
-				this.headArray[0] = head;
+				this.headArray[k] = head;
 				return head;
 			}
 		}
@@ -116,6 +121,19 @@ public class Tape {
 		System.out.print("\n");
 	}
 	
+	public String sendTape(int r, int c)
+	{
+		String map = "";
+		for(int i = 0; i < (r*c); i++)
+		{
+			if(this.fieldArray[i].head == null)
+				map += this.fieldArray[i].objType();
+			else
+				map += HeadOrientation(this.fieldArray[i]);
+		}
+		return map;
+	}
+	
 	protected void printHead(TapeField field)
 	{
 		switch(field.headOrientation())
@@ -132,6 +150,24 @@ public class Tape {
 			case 3:
 				System.out.print("<");
 				break;
+		}
+	}
+	
+	protected String HeadOrientation(TapeField field)
+	{
+		String ID = Integer.toString(field.getPlayerID());
+		switch(field.headOrientation())
+		{
+			case 0:
+				return ("^"+ID);
+			case 1:
+				return (">"+ID);
+			case 2:
+				return ("v"+ID);
+			case 3:
+				return ("<"+ID);
+			default:
+				return "";
 		}
 	}
 }
