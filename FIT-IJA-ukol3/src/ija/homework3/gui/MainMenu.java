@@ -1,15 +1,21 @@
     package ija.homework3.gui;
 
     import javax.swing.*;
+    import javax.swing.event.*;
     import java.awt.*;
     import java.awt.event.*;
+    import ija.homework3.gui.GamePlay;
 
+    /**
+     * Object responsible for the menu of the game.
+     */
     public class MainMenu extends javax.swing.JFrame {
 
         /**  Varibale declaration */
         private JPanel      panelCont;
         private JPanel      panelMainMenu;
         private JPanel      panelPlayMenu;
+        private JPanel      panelGameScreen;
         private JButton     buttonPlay;
         private JButton     buttonOptions;
         private JButton     buttonExit;
@@ -18,6 +24,9 @@
         private JButton     buttonConnect;
         private JLabel      labelMenuBackground;
         private JLabel      labelPlayBackground;
+        private JLabel      labelSliderValues;
+        private JLabel      labelMaps;
+        private JLabel      labelGames;
         private CardLayout  layout;
         private GroupLayout listLayout;
         private JScrollPane scrollPanelMapList;
@@ -25,6 +34,10 @@
         private JList       listMap;
         private JList       listGame;
         private JSlider     sliderSpeed;
+        private JTextArea  textFieldCurrentSpeed;
+        private String[] strListMap;
+        private String[] strListGame;
+        private double gameSpeed;
 
         /**  Constructor  */
         public MainMenu() {
@@ -46,32 +59,40 @@
             //  Creates the panel of PlayMenu
             createPlayMenu();
 
+            //  Creates the panel of Game
+            createGameScreen();
+
             //  Sets the MainMenu panel as starting panel
             layout.show(panelCont, "panelMainMenu");
-
+            repaint();
         }
 
         /**  Methods  */
         //  Initialization
         private void initComponents() {
-            panelCont           = new JPanel();
-            panelMainMenu       = new JPanel();
-            panelPlayMenu       = new JPanel();
-            buttonPlay          = new JButton();
-            buttonOptions       = new JButton();
-            buttonExit          = new JButton();
-            buttonBack          = new JButton();
-            buttonNewGame       = new JButton();
-            buttonConnect       = new JButton();
-            labelMenuBackground = new JLabel();
-            labelPlayBackground = new JLabel();
-            layout              = new CardLayout();
-            listLayout          = new GroupLayout(panelPlayMenu);
-            scrollPanelMapList  = new JScrollPane();
-            scrollPanelGameList = new JScrollPane();
-            listMap             = new JList();
-            listGame            = new JList();
-            sliderSpeed         = new JSlider(JSlider.HORIZONTAL, 5, 50, 25);
+            panelCont             = new JPanel();
+            panelMainMenu         = new JPanel();
+            panelPlayMenu         = new JPanel();
+            panelGameScreen       = new JPanel();
+            buttonPlay            = new JButton();
+            buttonOptions         = new JButton();
+            buttonExit            = new JButton();
+            buttonBack            = new JButton();
+            buttonNewGame         = new JButton();
+            buttonConnect         = new JButton();
+            labelMenuBackground   = new JLabel();
+            labelPlayBackground   = new JLabel();
+            labelSliderValues     = new JLabel();
+            labelMaps             = new JLabel();
+            labelGames            = new JLabel();
+            layout                = new CardLayout();
+            listLayout            = new GroupLayout(panelPlayMenu);
+            scrollPanelMapList    = new JScrollPane();
+            scrollPanelGameList   = new JScrollPane();
+            listMap               = new JList();
+            listGame              = new JList();
+            sliderSpeed           = new JSlider(JSlider.HORIZONTAL, 5, 50, 25);
+            textFieldCurrentSpeed = new JTextArea();
         }
 
         //  MainMenu
@@ -115,26 +136,24 @@
         }
 
         //  PlayMenu
-        @SuppressWarnings("unchecked")
         private void createPlayMenu(){
-
             panelPlayMenu.setLayout(null);
             panelCont.add(panelPlayMenu, "panelPlayMenu");
 
             //  List maps
-            listMap.setModel(new javax.swing.AbstractListModel() {
-                String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-                public int getSize() { return strings.length; }
-                public Object getElementAt(int i) { return strings[i]; }
-            });
+            labelMaps.setBackground(new Color(-1,true));
+            labelMaps.setOpaque(true);
+            labelMaps.setBounds(30, 30, 381, 25);
+            labelMaps.setText(" Maps:");
+            panelPlayMenu.add(labelMaps);
             scrollPanelMapList.setViewportView(listMap);
 
             //  List current games
-            listGame.setModel(new javax.swing.AbstractListModel() {
-                String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-                public int getSize() { return strings.length; }
-                public Object getElementAt(int i) { return strings[i]; }
-            });
+            labelGames.setBackground(new Color(-1,true));
+            labelGames.setOpaque(true);
+            labelGames.setBounds(503, 30, 381, 25);
+            labelGames.setText(" Games:");
+            panelPlayMenu.add(labelGames);
             scrollPanelGameList.setViewportView(listGame);
 
             //  Sets the Lists
@@ -152,17 +171,36 @@
             listLayout.setVerticalGroup(
                 listLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(listLayout.createSequentialGroup()
-                    .addGap(30, 30, 30)
+                    .addGap(55, 55, 55)
                     .addGroup(listLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(scrollPanelGameList, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(scrollPanelMapList, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(scrollPanelGameList, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(scrollPanelMapList, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                     )
                     .addContainerGap(0, Short.MAX_VALUE))
             );
 
             //  Slider
-            sliderSpeed.setBounds(30, 305,381,30);
+            labelSliderValues.setBackground(new Color(-1,true));
+            labelSliderValues.setOpaque(true);
+            labelSliderValues.setText("0.5                          2.5                                   5");
+            labelSliderValues.setBounds(30, 305, 300, 10);
+            panelPlayMenu.add(labelSliderValues);
+            sliderSpeed.setBounds(30, 315,300,30);
+            sliderSpeed.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    textFieldCurrentSpeed.setText("\n Speed: "+(sliderSpeed.getValue()/10)+"."+(sliderSpeed.getValue()%10));
+                    gameSpeed = Double.parseDouble((sliderSpeed.getValue()/10)+"."+(sliderSpeed.getValue()%10));
+                    System.out.println(gameSpeed);
+                }
+            });
             panelPlayMenu.add(sliderSpeed);
+
+            //sliderSpeed.getValue()/10)+"."+(sliderSpeed.getValue()%10)  Text area with the current speed
+            textFieldCurrentSpeed.setText("\n Speed: "+(sliderSpeed.getValue()/10)+"."+(sliderSpeed.getValue()%10));
+            textFieldCurrentSpeed.setBounds(330, 305, 81, 40);
+            textFieldCurrentSpeed.setEditable(false);
+            panelPlayMenu.add(textFieldCurrentSpeed);
 
             //  Back button
             buttonBack.setFont(new Font("URW Chancery L", 0, 32));
@@ -200,10 +238,40 @@
             //  Sets the background
             labelPlayBackground.setIcon(new ImageIcon(getClass().getResource("/pic/menu_background.gif")));
             labelPlayBackground.setBounds(0, -10, 922, 542);
-             panelPlayMenu.add(labelPlayBackground);
+            panelPlayMenu.add(labelPlayBackground);
         }
 
+        //  GameScree
+        private void createGameScreen(){
+            panelGameScreen.setLayout(null);
+            panelCont.add(panelGameScreen, "panelGameScreen");
+        }
+        @SuppressWarnings("unchecked")
         private void buttonActionPlay(java.awt.event.ActionEvent evt) {
+            /** Ati */
+            //establish connection, expected = list of maps, list of running games
+
+            //strListMap = new String[strings.length]; -- Change "strings" to the string array containig the maps returned by the server after connection
+            //System.arraycopy(strings,0,strListMap,0,strings.length-1); -||-
+            //strListGame = new String[strings.length]; -- Change "strings" to the string array containig the running games returned by the server after connection
+            //System.arraycopy(strings,0,strListGame,0,strings.length-1); -||-
+
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };// delete
+            strListMap = new String[strings.length];// delete
+            System.arraycopy(strings,0,strListMap,0,strings.length); // delete
+            strListGame = new String[strings.length];// delete
+            System.arraycopy(strings,0,strListGame,0,strings.length); // delete
+            /***/
+
+             // Don't touch or change location of the rest of the code in this method !!!
+            listMap.setModel(new javax.swing.AbstractListModel() {
+                public int getSize() { return strListMap.length; }
+                public Object getElementAt(int i) { return strListMap[i]; }
+            });
+            listGame.setModel(new javax.swing.AbstractListModel() {
+                public int getSize() { return strListGame.length; }
+                public Object getElementAt(int i) { return strListGame[i]; }
+            });
             layout.show(panelCont, "panelPlayMenu");
         }
 
@@ -216,12 +284,27 @@
         }
 
          private void buttonActionNewGame(java.awt.event.ActionEvent evt) {
-            System.out.println("NewGame");
+            if(listMap.getSelectedIndex() != -1 && strListMap[listMap.getSelectedIndex()] != null){
+                setExtendedState(JFrame.ICONIFIED);
+                /** Ati */
+                //strListMap[listMap.getSelectedIndex()] -- The chosen map from the list (string)
+                //start a new game Ati magic
+                //new GamePlay(x,y).setVisible(true); -- Change x and y (map size) + add connection information if need (also change class constructor)
+                new GamePlay(25,25).setVisible(true);// delete
+                /***/
+            }
+            setVisible(true);
             //layout.show(panelCont, "panelMainMenu");
         }
 
         private void buttonActionConnect(java.awt.event.ActionEvent evt) {
-            System.out.println("Connect");
-            //layout.show(panelCont, "panelMainMenu");
+            if(listGame.getSelectedIndex() != -1 && strListGame[listMap.getSelectedIndex()] != null){
+                setExtendedState(JFrame.ICONIFIED);
+                /** Ati */
+                //strListGame[listGame.getSelectedIndex()] -- The chosen game from the list (string)
+                //connect to a running game Ati magic
+                //new GamePlay(x,y).setVisible(true); -- Change x and y (map size) + add connection information if need (also change class constructor)
+                new GamePlay(25, 25).setVisible(true);// delete
+            }
         }
     }
