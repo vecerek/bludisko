@@ -9,13 +9,19 @@ public class GameThread extends Thread {
 
 	private GamePlay GUI;
 	//private MainMenu main;
-	//private Client client;
-	private Socket socket;
+	private Client client;
 	
-	public GameThread(Socket clientSocket){
-		this.socket = clientSocket;
+	private BufferedReader is;
+	private PrintStream os;
+	
+	public GameThread(Client client, BufferedReader is, PrintStream os){
+		this.client = client;
+		
         MainMenu main = new MainMenu(this);
         main.setVisible(true);
+        
+        this.is = is;
+        this.os = os;
 	}
 	
 	public void bindGUI(GamePlay GUI)
@@ -32,11 +38,11 @@ public class GameThread extends Thread {
     {
 	    String answer = "";
 	    String tmp;
-	    BufferedReader stdIn = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+	    
 	
-	    System.out.println("Response from server:");
+	    System.out.println("GameThread - Response from server:");
 	        
-	    while ((tmp = stdIn.readLine()) != null)
+	    while((tmp = this.is.readLine()) != null)
 	    {
 	        System.out.println(tmp);
 	        answer += tmp;
@@ -53,10 +59,9 @@ public class GameThread extends Thread {
      */
     public void send(String toDo)
     {
+    	System.out.println(toDo);
     	try {
-    		OutputStream outStream = this.socket.getOutputStream();
-    		PrintStream ps = new PrintStream(outStream, true); // Second param: auto-flush on write = true
-    		ps.println(toDo);
+    		this.os.println(toDo);
     	} catch(Exception e) {
     		System.err.println(e.getMessage());
     	}
@@ -64,12 +69,18 @@ public class GameThread extends Thread {
     
     public String request(String what)
     {
-    	try {
-	    	this.send(what);
-	    	return this.readResponse();
-    	} catch (Exception e) {
-    		System.err.println(e.getMessage());
-    		return "";
+    	synchronized(this) {
+	    	System.out.println("GameThread - request.");
+	    	try {
+		    	this.client.send(what);
+		    	String answer = this.client.readResponse();
+		    	System.out.println("Thread: " + answer);
+		    	return answer;
+	    	} catch (Exception e) {
+	    		System.out.println("Excepton1.");
+	    		System.err.println(e.getMessage());
+	    		return "";
+	    	}
     	}
     }
     

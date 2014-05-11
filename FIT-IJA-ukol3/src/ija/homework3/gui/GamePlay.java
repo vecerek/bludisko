@@ -197,7 +197,7 @@ import ija.homework3.client.*;
             this.client.send(this.strInputCommand);
             try {
             	String success = this.client.readResponse();
-                if(success == "OK")
+                if(success.equals("OK"))
                 	this.historyAddLine(this.strInputCommand + " - OK.");
                 else
                 	this.historyAddLine(this.strInputCommand + " - NOT OK.");

@@ -25,10 +25,13 @@ public class Server {
 	//Each game has its own ID.
 	private int gameCounter;
 	
+	protected BufferedReader in;
+	protected PrintStream out;
+	
 	//Pairs of gameIDs and Game objects.
 	private Map<String, Game> games;
 	//List of ClientThreads.
-	private List<ClientThread> clients;
+	private ArrayList<ClientThread> clients;
 	
 	/**
 	 * The clientsInGames is that data structure, which
@@ -73,11 +76,22 @@ public class Server {
 	    {
 	    	try {
 	    		Socket connection = this.ss.accept();
+	    		
+	    		BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+	    		PrintStream out = new PrintStream(connection.getOutputStream());
+	    		
+	    		this.in = in;
+	    		this.out = out;
+	    		
 	    		String clientName = "Client" + Integer.toString(this.clientCounter);
 	    		ClientThread client = new ClientThread(this, connection, clientName);
 	    		client.start();
 	    		this.clients.add(client);
+	    		if(this.clients.isEmpty())
+	    			System.out.println("START: Empty.");
+	    		System.out.println("Client connected.");
 	    		this.clientCounter++;
+	    		
 	    	} catch (IOException e) {
 	    		System.out.println(e);
 	    	}
@@ -88,17 +102,18 @@ public class Server {
      * Lists all possible labyrinths to select from
      */
     public String listFiles()
-    {
+    {System.out.println("Listing files:");
     	File f = new File("examples/");
     	String[] fileNames = f.list();
     	String listOfFiles = "";
     	
     	Arrays.sort(fileNames);
     	int size = fileNames.length;
+    	System.out.println("Size: " + size);
     	
     	for(int i=0; i < size; i++)
-    	{
-    		if(i != --size)
+    	{System.out.println(fileNames[i]);
+    		if(i != size - 1)
     			listOfFiles += fileNames[i] + ",";
     		else
     			listOfFiles += fileNames[i];
@@ -148,6 +163,7 @@ public class Server {
 	 */
 	public String createNewGame(String clientName, String map, int speed)
 	{
+		System.out.println("CreateNewGame1");
 		try {			
 			String client = clientName.substring("Client".length());
 			int ID = Integer.parseInt(client);
@@ -162,7 +178,10 @@ public class Server {
 			this.gameCounter++;
 		
 			this.games.put(gameName, game);
-			ClientThread thread = this.clients.get(--ID);
+			System.out.println("Lofasz2: " + ID);
+    		if(this.clients.isEmpty())
+    			System.out.println("START: Empty.");
+			ClientThread thread = this.clients.get(ID - 1);
 			thread.joinGame(gameName, game.speed);
 		
 			TapeHead player = game.startGame(map);
@@ -171,7 +190,7 @@ public class Server {
 			clientsPlayers.put(clientName, player);
 			this.clientsInGames.put(gameName, clientsPlayers);
 			clientsPlayers.clear();
-			
+			System.out.println("CreateNewGame10");
 			return game.getSizes();
 		}
 		catch (Exception e) {
@@ -190,6 +209,7 @@ public class Server {
 	 */
 	public String connectToGame(String clientName, String gameName)
 	{
+		System.out.println("Connecting to a game.");
 		Map<String, TapeHead> clientsPlayers = new HashMap<String, TapeHead>();
 		clientsPlayers = this.clientsInGames.get(gameName);
 		int size = clientsPlayers.size();
@@ -217,6 +237,7 @@ public class Server {
 	
 	public boolean execCommand(String clientName, String gameName, String command)
     {
+		System.out.println("Executing: " + command);
 		try {
 			TapeHead player = this.getPlayer(clientName, gameName);
 					
@@ -259,16 +280,28 @@ public class Server {
 	
 	public void refreshMap(String gameName)
 	{
-		String key = "";
+		System.out.println("Refresh started.");
+		//String key = "";
 		String client = "";
 		int ID;
 		List<ClientThread> InGamePlayers = new ArrayList<ClientThread>();
-		Map.Entry<String, TapeHead> pairs;
+		//Map.Entry<String, TapeHead> pairs;
 		
 		Map<String, TapeHead> players = new HashMap<String, TapeHead>();
 		players = this.clientsInGames.get(gameName);
 		
-		Iterator<Map.Entry<String, TapeHead>> it = players.entrySet().iterator();
+		for (String key : players.keySet()) {
+		    //TapeHead player = players.get(key);
+		    //System.out.println("Key = " + key + ", Value = " + value);
+		    client = key.substring("Client".length());
+			ID = Integer.parseInt(client);
+			
+			InGamePlayers.add(this.clients.get(--ID));
+		}
+		
+		
+		
+		/*Iterator<Map.Entry<String, TapeHead>> it = players.entrySet().iterator();
 	    while(it.hasNext())
 	    {
 	        pairs = (Map.Entry<String, TapeHead>)it.next();
@@ -278,7 +311,7 @@ public class Server {
 			ID = Integer.parseInt(client);
 			
 			InGamePlayers.add(this.clients.get(--ID));
-	    }
+	    }*/
 	    
 	    ClientThread oneClient;
 	    String gameField = this.getGameField(gameName);
@@ -342,7 +375,7 @@ public class Server {
     */
     public static void main(String[] args) {
         // Setting a default port number.
-        int portNumber = 9980;
+        int portNumber = 9988;
         
         try {
             // initializing the Socket Server

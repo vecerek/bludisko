@@ -264,12 +264,13 @@ import ija.homework3.client.*;
             //strListGame = new String[strings.length]; -- Change "strings" to the string array containig the running games returned by the server after connection
             //System.arraycopy(strings,0,strListGame,0,strings.length-1); -||-
         	
-        	String maps = this.client.request("list maps");
+        	String maps = this.client.request("list maps" + System.getProperty("line.separator"));
+        	System.out.println("MainMenu: " + maps);
         	int size = this.getNumberOf(maps);
             this.strListMap = new String[size];
             this.strListMap = this.getArrayOf(maps);
             
-            String games = this.client.request("list games");
+            String games = this.client.request("list games" + System.getProperty("line.separator"));
             size = this.getNumberOf(games);
             this.strListGame = new String[size];
             this.strListGame = this.getArrayOf(games);
@@ -303,14 +304,17 @@ import ija.homework3.client.*;
                 String createGame = "create:" + this.strListMap[this.listMap.getSelectedIndex()] + ",speed:" + Integer.toString(speed);
                 
                 String sizes = this.client.request(createGame);
+                System.out.println("Sizes: " + sizes);
                 int size = this.getNumberOf(sizes);
                 String[] gameSizes = new String[size];
                 gameSizes = this.getArrayOf(sizes);
                 
+                
+                
                 //strListMap[listMap.getSelectedIndex()] -- The chosen map from the list (string)
                 //start a new game Ati magic
                 //new GamePlay(x,y).setVisible(true); -- Change x and y (map size) + add connection information if need (also change class constructor)
-                new GamePlay(this.client, Integer.parseInt(gameSizes[0]),Integer.parseInt(gameSizes[1])).setVisible(true);// delete
+                new GamePlay(this.client, Integer.parseInt(gameSizes[0]), Integer.parseInt(gameSizes[1])).setVisible(true);// delete
                 /***/
             }
             setVisible(true);

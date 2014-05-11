@@ -17,6 +17,9 @@ public class ClientThread extends Thread {
 	private String gameID;
 	private int gameSpeed;
 	
+	private BufferedReader in;
+	private PrintStream out;
+	
 	public ClientThread(Server server, Socket s, String name){
 		super();
 		this.server = server;
@@ -33,7 +36,7 @@ public class ClientThread extends Thread {
 	 * @return client's message(command)
 	 * @throws IOException
 	 */
-    public String readResponse()
+    /*public String readResponse()
     {
         String toDo = "";
         String tmp;
@@ -52,7 +55,7 @@ public class ClientThread extends Thread {
         }
         
         return toDo;
-    }
+    }*/
     
     /**
      * Send the actual state of the Tape to the client. 
@@ -61,10 +64,7 @@ public class ClientThread extends Thread {
     public void send(String state)
     {
     	try {
-    		OutputStream outStream = this.socket.getOutputStream();
-    		// Second param: auto-flush on write = true
-    		PrintStream ps = new PrintStream(outStream, true);
-    		ps.println(state);
+    		this.out.println(state);
     	} catch(Exception e) {
     		System.err.println(e.getMessage());
     	}
@@ -79,7 +79,12 @@ public class ClientThread extends Thread {
     public void sendGameField(String gameField)
     {
     	this.send("refresh");
-    	while(this.readResponse() != "OK");
+    	try {
+			while(this.in.readLine() != "OK");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.err.println(e.getMessage());
+		}
     	this.send(gameField);
     }
     
@@ -101,18 +106,29 @@ public class ClientThread extends Thread {
      */
 	public void start()
 	{
+		System.out.println("New thread has started.");
 		try {
-			//Communicating with client
+		    //Communicating with client
 			String clientSaid = "";
 			boolean success;
 			
-			while((clientSaid = readResponse()) != "exit")
+			BufferedReader in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+    		PrintStream out = new PrintStream(this.socket.getOutputStream());
+    		
+    		this.in = in;
+    		this.out = out;
+			
+			while((clientSaid = this.in.readLine()) != "exit")
 			{
-				if(clientSaid == "list maps")
+				System.out.println("The client said to: |" + clientSaid+"|");
+				if(clientSaid.equals("") || clientSaid == null)
+					continue;
+				else if(clientSaid.equals("list maps"))
 				{
+					System.out.println("Lofasz");
 					this.send(this.server.listFiles());
 				}
-				else if(clientSaid == "list games")
+				else if(clientSaid.equals("list games"))
 				{
 					this.send(this.server.listGames());
 				}
@@ -120,9 +136,10 @@ public class ClientThread extends Thread {
 				{
 					String map = "";
 					int endIndexOfMap = clientSaid.indexOf(",speed:");
-					map = clientSaid.substring(clientSaid.lastIndexOf("create:") + 1, endIndexOfMap);
-					
-					String speedStr = clientSaid.substring(clientSaid.lastIndexOf("speed:") + 1);
+					map = clientSaid.substring("create:".length(), endIndexOfMap);
+					System.out.println("Here I am 2: " + map);
+					String speedStr = clientSaid.substring(endIndexOfMap + ",speed:".length());
+					System.out.println("Here I am: " + speedStr);
 					int speed = Integer.parseInt(speedStr);
 					
 					String size = this.server.createNewGame(this.name, map, speed);
@@ -134,7 +151,7 @@ public class ClientThread extends Thread {
 					String size = this.server.connectToGame(this.name, gameName);
 					this.send(size);
 				}
-				else if(clientSaid != "go" || clientSaid != "stop")
+				else if(!(clientSaid.equals("go") || clientSaid.equals("stop")))
 				{
 					synchronized(this) {
 						success = this.server.execCommand(this.name, this.gameID, clientSaid);
@@ -145,7 +162,7 @@ public class ClientThread extends Thread {
 					if(success)
 					{
 						this.send("OK");
-						if(clientSaid == "step")
+						if(clientSaid.equals("step"))
 							try {
 								Thread.sleep(this.gameSpeed * 100);
 							}
@@ -157,13 +174,13 @@ public class ClientThread extends Thread {
 						this.send("NOT OK");
 					
 				}
-				else if(clientSaid == "go")
+				else if(clientSaid.equals("go"))
 				{
 					clientSaid = "";
 					success = true;
 					boolean madeStep = false;
 					
-					while(!(clientSaid == "stop" || success == false))
+					while(!(clientSaid.equals("stop") || success == false))
 					{
 						madeStep = true;
 						
