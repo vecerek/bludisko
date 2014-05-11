@@ -21,24 +21,30 @@
             <fileset dir="${doc}" includes="**/*" excludes="**/architecture.pdf"/>
         </delete>
     </target>
-    
+
     <!-- COMPILE -->
     <target name="compile" depends="clean" description="Compile">
-        <javac srcdir="${src}" destdir="${build}" includeantruntime="false" encoding="UTF-8" classpath="lib/junit-4.10.jar">
+        <javac srcdir="${src}" destdir="${build}" includeantruntime="false" encoding="UTF-8">
         </javac>
 
-        <javac srcdir="${examples}" destdir="${build}" includeantruntime="false" encoding="UTF-8" classpath="lib/junit-4.10.jar">
+        <javac srcdir="${examples}" destdir="${build}" includeantruntime="false" encoding="UTF-8">
         </javac>
-        
+
         <!-- DOC -->
-        <javadoc sourcepath="${src}" destdir="${doc}" encoding="UTF-8" charset="UTF-8" classpath="lib/junit-4.10.jar">
+        <javadoc sourcepath="${src}" destdir="${doc}" encoding="UTF-8" charset="UTF-8">
         </javadoc>
-        
+
         <!-- JAR -->
-        <jar destfile="${dest}/ija2014.jar" basedir="${build}">
+        <jar destfile="${dest}/ija2014-server.jar" basedir="${build}">
+             <fileset dir="${lib}"/>
             <manifest>
-                <attribute name="Main-Class" value="ija.homework3.Singleplayer"/>
-               
+                <attribute name="Main-Class" value="ija.homework3.server.Server"/>
+            </manifest>
+        </jar>
+        <jar destfile="${dest}/ija2014-client.jar" basedir="${build}">
+             <fileset dir="${lib}"/>
+            <manifest>
+                <attribute name="Main-Class" value="ija.homework3.client.Client"/>
             </manifest>
         </jar>
 
@@ -48,17 +54,6 @@
         <copy file="${examples}/bludisko2.txt" todir="${dest}/examples"/>
         <copy file="${examples}/bludisko3.txt" todir="${dest}/examples"/>
 
-    </target>
-
-    <!-- TEST  -->
-    <target name="test">
-        <junit printsummary="withOutAndErr" fork="true">
-            <test name="ija.homework3.Homework3"/>
-            <classpath>
-                <pathelement path="build"/>
-                <pathelement location="./lib/junit-4.10.jar"/>
-            </classpath>
-    </junit>
     </target>
 
     <!-- RUN -->
