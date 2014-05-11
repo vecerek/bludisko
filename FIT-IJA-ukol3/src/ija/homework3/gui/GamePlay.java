@@ -1,8 +1,12 @@
     package ija.homework3.gui;
 
     import javax.swing.*;
-    import java.awt.*;
-    import java.awt.event.*;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.io.IOException;
+
+import ija.homework3.client.Client;
 
     /**
      * Object responsible for the gameplay.
@@ -27,12 +31,15 @@
         private String strMap;
         private int fieldX;
         private int fieldY;
+        
+        private Client client;
 
         /**  Constructor  */
-        public GamePlay(int x, int y) {
+        public GamePlay(Client client, int x, int y) {
 
             super("The Labyrinth");
-
+            this.client = client;
+            
             setResizable(false);
             setSize(1100,730);
 
@@ -102,7 +109,7 @@
         private void Game() {
         /** Ati */
         //delete both Strmaps
-        strMap = "wwwwwwwwwwwwwwwwwwwwwwwwwppwp_pppppppppppppwpppppww>3w_wwwwwwwwwpwwwpwpwpwpwwpwppppppkwpwpppwkwpwkpwwpwwwwwwwwwpwgwwwwwpwwwpwwpppppppwpppppppwpppppwppwwwwwwwpwpwwwpwwwwwpwwwwwwkpppkwpwpwkppwpppwpppppwwwwpwwwpwpwwwpwwwpwwwwwpwwpppwpppppwpwpppwpppppwpwwwwpwwwwwwwwwwwpwpwwwpwpwwpppppppwpppppwpppwpppppwwwwwwgwwwwwpwwwwwwwwwwwgwwpppppppppwpppwpppwpppppwwpwwwwwgwwwpwgwpwpwpwwwwwwpwpwkwpwkwpwpppwpwpppppwwpwpwpwpwpwpwwwwwpwwwpwwwwpwpppwpwpppppwpppppwpwkwwpwpwwwpwwwwwpwpwwwwwpwpwwpwpwppppppkwpwpppppwpppwwpwpwwwwwwwwwpwwwwwgwpwwwwpppppppwpppppwpgpwpppppwwwwwwwwpwpwwwwwpwpwwwwwwwwpppppppgpgpppppwpppppppfwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwppwp_pppppppppppppwpppppww>3w_wwwwwwwwwpwwwpwpwpwpwwpwppppppkwpwpppwkwpwkpwwpwwwwwwwwwpwgwwwwwpwwwpwwpppppppwpppppppwpppppwppwwwwwwwpwpwwwpwwwwwpwwwwwwkpppkwpwpwkppwpppwpppppwwwwpwwwpwpwwwpwwwpwwwwwpwwpppwpppppwpwpppwpppppwpwwwwpwwwwwwwwwwwpwpwwwpwpwwpppppppwpppppwpppwpppppwwwwwwgwwwwwpwwwwwwwwwwwgwwpppppppppwpppwpppwpppppwwpwwwwwgwwwpwgwpwpwpwwwwwwpwpwkwpwkwpwpppwpwpppppwwpwpwpwpwpwpwwwwwpwwwpwwwwpwpppwpwpppppwpppppwpwkwwpwpwwwpwwwwwpwpwwwwwpwpwwpwpwppppppkwpwpppppwpppwwpwpwwwwwwwwwpwwwwwgwpwwwwpppppppwpppppwpgpwpppppwwwwwwwwpwpwwwwwpwpwwwwwwwwpppppppgpgpppppwpppppppfwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwppwp_pppppppppppppwpppppww>3w_wwwwwwwwwpwwwpwpwpwpwwpwppppppkwpwpppwkwpwkpwwpwwwwwwwwwpwgwwwwwpwwwpwwpppppppwpppppppwpppppwppwwwwwwwpwpwwwpwwwwwpwwwwwwkpppkwpwpwkppwpppwpppppwwwwpwwwpwpwwwpwwwpwwwwwpwwpppwpppppwpwpppwpppppwpwwwwpwwwwwwwwwwwpwpwwwpwpwwpppppppwpppppwpppwpppppwwwwwwgwwwwwpwwwwwwwwwwwgwwpppppppppwpppwpppwpppppwwpwwwwwgwwwpwgwpwpwpwwwwwwpwpwkwpwkwpwpppwpwpppppwwpwpwpwpwpwpwwwwwpwwwpwwwwpwpppwpwpppppwpppppwpwkwwpwpwwwpwwwwwpwpwwwwwpwpwwpwpwppppppkwpwpppppwpppwwpwpwwwwwwwwwpwwwwwgwpwwwwpppppppwpppppwpgpwpppppwwwwwwwwpwpwwwwwpwpwwwwwwwwpppppppgpgpppppwpppppppfwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwppwp_pppppppppppppwpppppww>3w_wwwwwwwwwpwwwpwpwpwpwwpwppppppkwpwpppwkwpwkpwwpwwwwwwwwwpwgwwwwwpwwwpwwpppppppwpppppppwpppppwppwwwwwwwpwpwwwpwwwwwpwwwwwwkpppkwpwpwkppwpppwpppppwwwwpwwwpwpwwwpwwwpwwwwwpwwpppwpppppwpwpppwpppppwpwwwwpwwwwwwwwwwwpwpwwwpwpwwpppppppwpppppwpppwpppppwwwwwwgwwwwwpwwwwwwwwwwwgwwpppppppppwpppwpppwpppppwwpwwwwwgwwwpwgwpwpwpwwwwwwpwpwkwpwkwpwpppwpwpppppwwpwpwpwpwpwpwwwwwpwwwpwwwwpwpppwpwpppppwpppppwpwkwwpwpwwwpwwwwwpwpwwwwwpwpwwpwpwppppppkwpwpppppwpppwwpwpwwwwwwwwwpwwwwwgwpwwwwpppppppwpppppwpgpwpppppwwwwwwwwpwpwwwwwpwpwwwwwwwwpppppppgpgpppppwpppppppfwwwwwwwwwwwwwwwwwwwwwwwwww";
+        // strMap = "wwwwwwwwwwwwwwwwwwwwwwwwwppwp_pppppppppppppwpppppww>3w_wwwwwwwwwpwwwpwpwpwpwwpwppppppkwpwpppwkwpwkpwwpwwwwwwwwwpwgwwwwwpwwwpwwpppppppwpppppppwpppppwppwwwwwwwpwpwwwpwwwwwpwwwwwwkpppkwpwpwkppwpppwpppppwwwwpwwwpwpwwwpwwwpwwwwwpwwpppwpppppwpwpppwpppppwpwwwwpwwwwwwwwwwwpwpwwwpwpwwpppppppwpppppwpppwpppppwwwwwwgwwwwwpwwwwwwwwwwwgwwpppppppppwpppwpppwpppppwwpwwwwwgwwwpwgwpwpwpwwwwwwpwpwkwpwkwpwpppwpwpppppwwpwpwpwpwpwpwwwwwpwwwpwwwwpwpppwpwpppppwpppppwpwkwwpwpwwwpwwwwwpwpwwwwwpwpwwpwpwppppppkwpwpppppwpppwwpwpwwwwwwwwwpwwwwwgwpwwwwpppppppwpppppwpgpwpppppwwwwwwwwpwpwwwwwpwpwwwwwwwwpppppppgpgpppppwpppppppfwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwppwp_pppppppppppppwpppppww>3w_wwwwwwwwwpwwwpwpwpwpwwpwppppppkwpwpppwkwpwkpwwpwwwwwwwwwpwgwwwwwpwwwpwwpppppppwpppppppwpppppwppwwwwwwwpwpwwwpwwwwwpwwwwwwkpppkwpwpwkppwpppwpppppwwwwpwwwpwpwwwpwwwpwwwwwpwwpppwpppppwpwpppwpppppwpwwwwpwwwwwwwwwwwpwpwwwpwpwwpppppppwpppppwpppwpppppwwwwwwgwwwwwpwwwwwwwwwwwgwwpppppppppwpppwpppwpppppwwpwwwwwgwwwpwgwpwpwpwwwwwwpwpwkwpwkwpwpppwpwpppppwwpwpwpwpwpwpwwwwwpwwwpwwwwpwpppwpwpppppwpppppwpwkwwpwpwwwpwwwwwpwpwwwwwpwpwwpwpwppppppkwpwpppppwpppwwpwpwwwwwwwwwpwwwwwgwpwwwwpppppppwpppppwpgpwpppppwwwwwwwwpwpwwwwwpwpwwwwwwwwpppppppgpgpppppwpppppppfwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwppwp_pppppppppppppwpppppww>3w_wwwwwwwwwpwwwpwpwpwpwwpwppppppkwpwpppwkwpwkpwwpwwwwwwwwwpwgwwwwwpwwwpwwpppppppwpppppppwpppppwppwwwwwwwpwpwwwpwwwwwpwwwwwwkpppkwpwpwkppwpppwpppppwwwwpwwwpwpwwwpwwwpwwwwwpwwpppwpppppwpwpppwpppppwpwwwwpwwwwwwwwwwwpwpwwwpwpwwpppppppwpppppwpppwpppppwwwwwwgwwwwwpwwwwwwwwwwwgwwpppppppppwpppwpppwpppppwwpwwwwwgwwwpwgwpwpwpwwwwwwpwpwkwpwkwpwpppwpwpppppwwpwpwpwpwpwpwwwwwpwwwpwwwwpwpppwpwpppppwpppppwpwkwwpwpwwwpwwwwwpwpwwwwwpwpwwpwpwppppppkwpwpppppwpppwwpwpwwwwwwwwwpwwwwwgwpwwwwpppppppwpppppwpgpwpppppwwwwwwwwpwpwwwwwpwpwwwwwwwwpppppppgpgpppppwpppppppfwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwppwp_pppppppppppppwpppppww>3w_wwwwwwwwwpwwwpwpwpwpwwpwppppppkwpwpppwkwpwkpwwpwwwwwwwwwpwgwwwwwpwwwpwwpppppppwpppppppwpppppwppwwwwwwwpwpwwwpwwwwwpwwwwwwkpppkwpwpwkppwpppwpppppwwwwpwwwpwpwwwpwwwpwwwwwpwwpppwpppppwpwpppwpppppwpwwwwpwwwwwwwwwwwpwpwwwpwpwwpppppppwpppppwpppwpppppwwwwwwgwwwwwpwwwwwwwwwwwgwwpppppppppwpppwpppwpppppwwpwwwwwgwwwpwgwpwpwpwwwwwwpwpwkwpwkwpwpppwpwpppppwwpwpwpwpwpwpwwwwwpwwwpwwwwpwpppwpwpppppwpppppwpwkwwpwpwwwpwwwwwpwpwwwwwpwpwwpwpwppppppkwpwpppppwpppwwpwpwwwwwwwwwpwwwwwgwpwwwwpppppppwpppppwpgpwpppppwwwwwwwwpwpwwwwwpwpwwwwwwwwpppppppgpgpppppwpppppppfwwwwwwwwwwwwwwwwwwwwwwwwww";
         // strMap = "wwwwwwwwwwwwwwwwwwwwwppkwpppppwppppppppwwpwwwpwpwwwwwwpwwwpwppppppwphpwppppwpppwwwwwwwwwwpwpwwwwwwgwwpv1pppppwpppwp^4ppppwwpwwwwwpwwwwwpwwwwpww>3ppwpwpppwppppppwpwwpwpwkwwwgwpwwwwpwpwwpwpwpppwppppppppwkwwwwpwwwpwwwwwwwwwwwwwpppwpppgppppppwppkwwpwpwpwwwpwpwwwwwpwwwpwpwpwpppwppppppppwwpwwwpwwwwwwwwwwwwpwwpppppwppppppppwpppwwwwgwwwpwwwwgwwwwwpwwkkpwpppwppppppppppwwwwwwwwpwwwwwwwwwwwwwpppppppgppppppppppf";
         /***/
             panelCont.setLayout(null);
@@ -123,11 +130,13 @@
             // Use a While loop until finish message, server is expected to send back the current map or feedback.
             // 1) Set "strMap" to this new map. Use "paintField" to refresh the gui.
             // 2) Use "historyAddLine" to put the message to the history area
+            
             paintField();
             /***/
             panelCont.add(labelTexture);
 
         }
+        
         private void Command() {
             //  List of commands
             labelCommandList.setBackground(new Color(-1,true));
@@ -175,10 +184,23 @@
 
         //  User entered a command
         private void textActionEntered(ActionEvent evt){
-            strInputCommand = textFieldCommandLine.getText();
-            textFieldCommandLine.setText("");
+            this.strInputCommand = textFieldCommandLine.getText();
+            this.textFieldCommandLine.setText("");
+            
             /** Ati */
             // "strInputCommand" stores the command given by the user, do your stuff (Ati magic)
+            this.client.send(this.strInputCommand);
+            try {
+            	String success = this.client.readResponse();
+                if(success == "OK")
+                	this.historyAddLine(this.strInputCommand + " - OK.");
+                else
+                	this.historyAddLine(this.strInputCommand + " - NOT OK.");
+                
+            } catch(IOException e) {
+            	System.err.println(e.getMessage());
+            	this.historyAddLine(this.strInputCommand + " - NOT OK.");
+            };
             /***/
         }
 
@@ -226,7 +248,7 @@
                         // Change thor in the image path to the picture of Loki
                         // 4x Loki pics, res.: 35x35, 23x23, 17x17, 14x14
                         // strFormat is only one number (not 14x14, but 14)
-                        labelField[i][j].setIcon(new ImageIcon(getClass().getResource("/pic/thor_"+strFormat+".png")));
+                        labelField[i][j].setIcon(new ImageIcon(getClass().getResource("/pic/loki_"+strFormat+".png")));
                         /***/
                     else if(tmpActChar.equals("f"))
                         labelField[i][j].setIcon(new ImageIcon(getClass().getResource("/pic/fin_"+strFormat+".png")));
@@ -249,5 +271,11 @@
                     }
                 }
             }
+        }
+        
+        public void rePaintField(String Map)
+        {
+        	this.strMap = Map;
+        	this.paintField();
         }
 }

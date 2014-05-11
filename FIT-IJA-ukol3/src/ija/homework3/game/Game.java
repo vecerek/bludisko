@@ -85,6 +85,12 @@ public class Game {
         return null;
 	}
 	
+	public String getSizes()
+	{
+		String size = Integer.toString(this.R) + "," + Integer.toString(this.C);
+		return size;
+	}
+	
 	/**
 	 * Adds a new player into the game, with a unique ID.
 	 * 

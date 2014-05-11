@@ -85,6 +85,56 @@ public class Server {
 	}
 	
 	/**
+     * Lists all possible labyrinths to select from
+     */
+    public String listFiles()
+    {
+    	File f = new File("examples/");
+    	String[] fileNames = f.list();
+    	String listOfFiles = "";
+    	
+    	Arrays.sort(fileNames);
+    	int size = fileNames.length;
+    	
+    	for(int i=0; i < size; i++)
+    	{
+    		if(i != --size)
+    			listOfFiles += fileNames[i] + ",";
+    		else
+    			listOfFiles += fileNames[i];
+    	}
+    	
+    	return listOfFiles;
+    }
+    
+    public String listGames()
+    {
+    	String key = "";
+    	String listOfGames = "";
+    	int count = 0;
+    	Map.Entry<String, Game> pairs;
+		
+		Map<String, Game> gamesList = new HashMap<String, Game>();
+		
+		Iterator<Map.Entry<String, Game>> it = gamesList.entrySet().iterator();
+	    while(it.hasNext())
+	    {
+	        pairs = (Map.Entry<String, Game>)it.next();
+	        key = pairs.getKey();
+	        
+	        if(count == 0)
+	        	listOfGames += key;
+	        else
+	        	listOfGames += "," + key;
+	        
+	        count++;
+	    }
+	    gamesList.clear();
+	    
+	    return listOfGames;
+    }
+	
+	/**
 	 * Creates new Game object. Tags it with a unique ID.
 	 * Puts the pair of gameID and object into the map.
 	 * Starts the game and creates the first player. Puts
@@ -96,9 +146,9 @@ public class Server {
 	 * @param map			chosen level of labyrinth.
 	 * @return true/false   is it able to create a new game or not.
 	 */
-	public boolean createNewGame(String clientName, String map, int speed)
+	public String createNewGame(String clientName, String map, int speed)
 	{
-		try {
+		try {			
 			String client = clientName.substring("Client".length());
 			int ID = Integer.parseInt(client);
 			
@@ -116,17 +166,18 @@ public class Server {
 			thread.joinGame(gameName, game.speed);
 		
 			TapeHead player = game.startGame(map);
+			
 			Map<String, TapeHead> clientsPlayers = new HashMap<String, TapeHead>();
 			clientsPlayers.put(clientName, player);
 			this.clientsInGames.put(gameName, clientsPlayers);
 			clientsPlayers.clear();
+			
+			return game.getSizes();
 		}
 		catch (Exception e) {
 			System.err.println(e.getMessage());
-			return false;
+			return null;
 		}
-		
-		return true;
 	}
 	
 	/**
@@ -137,7 +188,7 @@ public class Server {
 	 * @param gameName		games's ID.
 	 * @return true/false	is the client able to connect to the game.
 	 */
-	public boolean connectToGame(String clientName, String gameName)
+	public String connectToGame(String clientName, String gameName)
 	{
 		Map<String, TapeHead> clientsPlayers = new HashMap<String, TapeHead>();
 		clientsPlayers = this.clientsInGames.get(gameName);
@@ -153,47 +204,57 @@ public class Server {
 			//clears the temporary map.
 			clientsPlayers.clear();
 			
-			return true;
+			String client = clientName.substring("Client".length());
+			int ID = Integer.parseInt(client);
+			ClientThread thread = this.clients.get(--ID);
+			thread.joinGame(gameName, game.speed);
+			
+			return game.getSizes();
 		}
 		else
-			return false;
+			return "Full.";
 	}
 	
 	public boolean execCommand(String clientName, String gameName, String command)
     {
-		TapeHead player = this.getPlayer(clientName, gameName);
-				
-    	switch(command)
-       	{
-       		case "take":
-       			if(player.take())
-       				return true;
-       			else
-       				return false;
-       		case "open":
-       			if(player.open())
-       				return true;
-       			else
-       				return false;
-       		case "left":
-       			player.left();
-       			return true;
-       		case "right":
-       			player.right();
-       			return true;
-       		case "step":
-       			if(player.step())
-       			{
-       				//if player's won the game
-       				if(player.finished())
-       					//TODO: notify all clients in the game
-       				return true;
-       			}
-       			else
-       				return false;
-       		default:
-       			return false;
-      	}
+		try {
+			TapeHead player = this.getPlayer(clientName, gameName);
+					
+	    	switch(command)
+	       	{
+	       		case "take":
+	       			if(player.take())
+	       				return true;
+	       			else
+	       				return false;
+	       		case "open":
+	       			if(player.open())
+	       				return true;
+	       			else
+	       				return false;
+	       		case "left":
+	       			player.left();
+	       			return true;
+	       		case "right":
+	       			player.right();
+	       			return true;
+	       		case "step":
+	       			if(player.step())
+	       			{
+	       				//if player's won the game
+	       				if(player.finished())
+	       					//TODO: notify all clients in the game
+	       				return true;
+	       			}
+	       			else
+	       				return false;
+	       		default:
+	       			return false;
+	      	}
+		}
+		finally {
+			this.refreshMap(gameName);
+		}
     }
 	
 	public void refreshMap(String gameName)

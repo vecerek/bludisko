@@ -2,6 +2,7 @@ package ija.homework3.client;
 
 import java.io.*;
 import java.net.*;
+import ija.homework3.gui.*;
 
 /**
  * A simple client communicating with the game
@@ -14,10 +15,16 @@ public class Client {
 	private String hostname;
     private int port;
     Socket socket;
+    private GamePlay GUI;
 
     public Client(String hostname, int port) {
         this.hostname = hostname;
         this.port = port;
+    }
+    
+    public void bindGUI(GamePlay GUI)
+    {
+    	this.GUI = GUI;
     }
     
     /**
@@ -39,19 +46,19 @@ public class Client {
      */
     public String readResponse() throws IOException
     {
-        String answer = "";
-        String tmp;
-        BufferedReader stdIn = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-
-        System.out.println("Response from server:");
-        
-        while ((tmp = stdIn.readLine()) != null)
-        {
-            System.out.println(tmp);
-            answer += tmp;
-        }
-        
-        return answer;
+	    String answer = "";
+	    String tmp;
+	    BufferedReader stdIn = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+	
+	    System.out.println("Response from server:");
+	        
+	    while ((tmp = stdIn.readLine()) != null)
+	    {
+	        System.out.println(tmp);
+	        answer += tmp;
+	    }
+	        
+	    return answer;
     }
     
     /**
@@ -71,6 +78,17 @@ public class Client {
     	}
     }
     
+    public String request(String what)
+    {
+    	try {
+	    	this.send(what);
+	    	return this.readResponse();
+    	} catch (Exception e) {
+    		System.err.println(e.getMessage());
+    		return "";
+    	}
+    }
+    
     /**
      * Creates the client, opens connection and sends
      * the commands caught in the GUI.
@@ -79,12 +97,15 @@ public class Client {
     public static void main(String arg[]) {
         //Creating a SocketClient object
         Client client = new Client ("localhost", 9990);
-        String serverToldMeTo;
+        MainMenu main = new MainMenu(client);
+        main.setVisible(true);
+        
+        String serverToldMe;
         try {
             //trying to establish connection to the server
             client.connect();
             //if successful, read response from server
-            while((serverToldMeTo = client.readResponse()) != "exit")
+            while((serverToldMe = client.readResponse()) != "exit")
             {
             	//Tell the graphic user interface to paint the stuff.
             	//Tell server, what to do

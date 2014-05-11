@@ -108,7 +108,33 @@ public class ClientThread extends Thread {
 			
 			while((clientSaid = readResponse()) != "exit")
 			{
-				if(clientSaid != "go" || clientSaid != "stop")
+				if(clientSaid == "list maps")
+				{
+					this.send(this.server.listFiles());
+				}
+				else if(clientSaid == "list games")
+				{
+					this.send(this.server.listGames());
+				}
+				else if(clientSaid.contains("create:"))
+				{
+					String map = "";
+					int endIndexOfMap = clientSaid.indexOf(",speed:");
+					map = clientSaid.substring(clientSaid.lastIndexOf("create:") + 1, endIndexOfMap);
+					
+					String speedStr = clientSaid.substring(clientSaid.lastIndexOf("speed:") + 1);
+					int speed = Integer.parseInt(speedStr);
+					
+					String size = this.server.createNewGame(this.name, map, speed);
+					this.send(size);
+				}
+				else if(clientSaid.contains("connect:"))
+				{
+					String gameName = clientSaid.substring("connect:".length());
+					String size = this.server.connectToGame(this.name, gameName);
+					this.send(size);
+				}
+				else if(clientSaid != "go" || clientSaid != "stop")
 				{
 					synchronized(this) {
 						success = this.server.execCommand(this.name, this.gameID, clientSaid);

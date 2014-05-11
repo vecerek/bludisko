@@ -1,10 +1,14 @@
     package ija.homework3.gui;
 
     import javax.swing.*;
-    import javax.swing.event.*;
-    import java.awt.*;
-    import java.awt.event.*;
-    import ija.homework3.gui.GamePlay;
+import javax.swing.event.*;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.util.regex.*;
+
+import ija.homework3.gui.GamePlay;
+import ija.homework3.client.Client;
 
     /**
      * Object responsible for the menu of the game.
@@ -38,10 +42,14 @@
         private String[] strListMap;
         private String[] strListGame;
         private double gameSpeed;
+        
+        private Client client;
 
         /**  Constructor  */
-        public MainMenu() {
+        public MainMenu(Client client) {
             super("The Labyrinth");
+            
+            this.client = client;
 
             setResizable(false);
             setSize(922,542);
@@ -255,12 +263,16 @@
             //System.arraycopy(strings,0,strListMap,0,strings.length-1); -||-
             //strListGame = new String[strings.length]; -- Change "strings" to the string array containig the running games returned by the server after connection
             //System.arraycopy(strings,0,strListGame,0,strings.length-1); -||-
-
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };// delete
-            strListMap = new String[strings.length];// delete
-            System.arraycopy(strings,0,strListMap,0,strings.length); // delete
-            strListGame = new String[strings.length];// delete
-            System.arraycopy(strings,0,strListGame,0,strings.length); // delete
+        	
+        	String maps = this.client.request("list maps");
+        	int size = this.getNumberOf(maps);
+            this.strListMap = new String[size];
+            this.strListMap = this.getArrayOf(maps);
+            
+            String games = this.client.request("list games");
+            size = this.getNumberOf(games);
+            this.strListGame = new String[size];
+            this.strListGame = this.getArrayOf(games);
             /***/
 
              // Don't touch or change location of the rest of the code in this method !!!
@@ -287,10 +299,18 @@
             if(listMap.getSelectedIndex() != -1 && strListMap[listMap.getSelectedIndex()] != null){
                 setExtendedState(JFrame.ICONIFIED);
                 /** Ati */
+                int speed = this.sliderSpeed.getValue();
+                String createGame = "create:" + this.strListMap[this.listMap.getSelectedIndex()] + ",speed:" + Integer.toString(speed);
+                
+                String sizes = this.client.request(createGame);
+                int size = this.getNumberOf(sizes);
+                String[] gameSizes = new String[size];
+                gameSizes = this.getArrayOf(sizes);
+                
                 //strListMap[listMap.getSelectedIndex()] -- The chosen map from the list (string)
                 //start a new game Ati magic
                 //new GamePlay(x,y).setVisible(true); -- Change x and y (map size) + add connection information if need (also change class constructor)
-                new GamePlay(25,25).setVisible(true);// delete
+                new GamePlay(this.client, Integer.parseInt(gameSizes[0]),Integer.parseInt(gameSizes[1])).setVisible(true);// delete
                 /***/
             }
             setVisible(true);
@@ -301,10 +321,42 @@
             if(listGame.getSelectedIndex() != -1 && strListGame[listMap.getSelectedIndex()] != null){
                 setExtendedState(JFrame.ICONIFIED);
                 /** Ati */
+                String connect = "connect:" + this.strListGame[this.listGame.getSelectedIndex()];
+                String sizes = this.client.request(connect);
                 //strListGame[listGame.getSelectedIndex()] -- The chosen game from the list (string)
                 //connect to a running game Ati magic
                 //new GamePlay(x,y).setVisible(true); -- Change x and y (map size) + add connection information if need (also change class constructor)
-                new GamePlay(25, 25).setVisible(true);// delete
+                if(sizes != "Full.")
+                {
+                	int size = this.getNumberOf(sizes);
+                    String[] gameSizes = new String[size];
+                    gameSizes = this.getArrayOf(sizes);
+                    
+                    new GamePlay(this.client, Integer.parseInt(gameSizes[0]),Integer.parseInt(gameSizes[1])).setVisible(true);// delete
+                }
             }
+        }
+        
+        private int getNumberOf(String maps)
+        {
+			Pattern p = Pattern.compile(",");
+			Matcher m = p.matcher(maps);
+			
+			int count = 0;
+				
+			while (m.find()){
+				count +=1;
+			}
+				
+			return count + 1;
+        }
+        
+        private String[] getArrayOf(String anything)
+        {
+        	int size = this.getNumberOf(anything);
+        	String[] tmp = new String[size];
+
+        	tmp = anything.split(",");
+        	return tmp;
         }
     }
