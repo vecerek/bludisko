@@ -1,14 +1,14 @@
-    package ija.homework3.gui;
+package ija.homework3.gui;
 
-    import javax.swing.*;
+import javax.swing.*;
 import javax.swing.event.*;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.util.regex.*;
 
-import ija.homework3.gui.GamePlay;
-import ija.homework3.client.Client;
+//import ija.homework3.gui.GamePlay;
+import ija.homework3.client.*;
 
     /**
      * Object responsible for the menu of the game.
@@ -43,10 +43,10 @@ import ija.homework3.client.Client;
         private String[] strListGame;
         private double gameSpeed;
         
-        private Client client;
+        private GameThread client;
 
         /**  Constructor  */
-        public MainMenu(Client client) {
+        public MainMenu(GameThread client) {
             super("The Labyrinth");
             
             this.client = client;

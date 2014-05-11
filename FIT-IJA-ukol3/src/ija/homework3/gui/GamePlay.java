@@ -1,19 +1,24 @@
-    package ija.homework3.gui;
+package ija.homework3.gui;
 
-    import javax.swing.*;
+import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 
-import ija.homework3.client.Client;
+import ija.homework3.client.*;
 
     /**
      * Object responsible for the gameplay.
      */
     public class GamePlay extends javax.swing.JFrame {
 
-        /**  Varibale declaration */
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 7957031960062731508L;
+		
+		/**  Varibale declaration */
         private JLabel[][] labelField;
         private JLabel[][] labelFieldArrow;
         private JLabel labelTexture;
@@ -32,10 +37,10 @@ import ija.homework3.client.Client;
         private int fieldX;
         private int fieldY;
         
-        private Client client;
+        private GameThread client;
 
         /**  Constructor  */
-        public GamePlay(Client client, int x, int y) {
+        public GamePlay(GameThread client, int x, int y) {
 
             super("The Labyrinth");
             this.client = client;

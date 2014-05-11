@@ -342,7 +342,7 @@ public class Server {
     */
     public static void main(String[] args) {
         // Setting a default port number.
-        int portNumber = 9990;
+        int portNumber = 9980;
         
         try {
             // initializing the Socket Server

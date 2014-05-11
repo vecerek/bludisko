@@ -2,7 +2,6 @@ package ija.homework3.client;
 
 import java.io.*;
 import java.net.*;
-import ija.homework3.gui.*;
 
 /**
  * A simple client communicating with the game
@@ -14,17 +13,12 @@ public class Client {
 	
 	private String hostname;
     private int port;
-    Socket socket;
-    private GamePlay GUI;
+    private Socket socket;
+    //private GamePlay GUI;
 
     public Client(String hostname, int port) {
         this.hostname = hostname;
         this.port = port;
-    }
-    
-    public void bindGUI(GamePlay GUI)
-    {
-    	this.GUI = GUI;
     }
     
     /**
@@ -70,7 +64,7 @@ public class Client {
     public void send(String toDo)
     {
     	try {
-    		OutputStream outStream = socket.getOutputStream();
+    		OutputStream outStream = this.socket.getOutputStream();
     		PrintStream ps = new PrintStream(outStream, true); // Second param: auto-flush on write = true
     		ps.println(toDo);
     	} catch(Exception e) {
@@ -96,19 +90,27 @@ public class Client {
      */
     public static void main(String arg[]) {
         //Creating a SocketClient object
-        Client client = new Client ("localhost", 9990);
-        MainMenu main = new MainMenu(client);
-        main.setVisible(true);
+        Client client = new Client ("localhost", 9980);
+        GameThread gameControl = new GameThread(client.socket);
+        /*MainMenu main = new MainMenu(client);
+        main.setVisible(true);*/
         
-        String serverToldMe;
+        //String serverToldMe;
         try {
             //trying to establish connection to the server
             client.connect();
+            String serverToldMe = "";
             //if successful, read response from server
             while((serverToldMe = client.readResponse()) != "exit")
             {
             	//Tell the graphic user interface to paint the stuff.
             	//Tell server, what to do
+            	if(serverToldMe == "refresh")
+            	{
+            		client.send("OK");
+            		serverToldMe = client.readResponse();
+            		gameControl.refreshMap(serverToldMe);
+            	}
             }
 
         } catch (UnknownHostException e) {
