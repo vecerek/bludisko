@@ -85,12 +85,9 @@ public class Server {
 	    		
 	    		String clientName = "Client" + Integer.toString(this.clientCounter);
 	    		ClientThread client = new ClientThread(this, connection, clientName);
-	    		client.start();
 	    		this.clients.add(client);
-	    		if(this.clients.isEmpty())
-	    			System.out.println("START: Empty.");
-	    		System.out.println("Client connected.");
 	    		this.clientCounter++;
+	    		client.start();
 	    		
 	    	} catch (IOException e) {
 	    		System.out.println(e);
@@ -178,11 +175,12 @@ public class Server {
 			this.gameCounter++;
 		
 			this.games.put(gameName, game);
-			System.out.println("Lofasz2: " + ID);
     		if(this.clients.isEmpty())
     			System.out.println("START: Empty.");
-			ClientThread thread = this.clients.get(ID - 1);
-			thread.joinGame(gameName, game.speed);
+			//ClientThread thread = this.clients[ID - 1];
+			//if(thread == null)
+				//System.out.println("NULL!");
+			this.clients.get(ID - 1).joinGame(gameName, game.speed);
 		
 			TapeHead player = game.startGame(map);
 			
@@ -226,7 +224,7 @@ public class Server {
 			
 			String client = clientName.substring("Client".length());
 			int ID = Integer.parseInt(client);
-			ClientThread thread = this.clients.get(--ID);
+			ClientThread thread = this.clients.get(ID - 1);
 			thread.joinGame(gameName, game.speed);
 			
 			return game.getSizes();
@@ -284,7 +282,7 @@ public class Server {
 		//String key = "";
 		String client = "";
 		int ID;
-		List<ClientThread> InGamePlayers = new ArrayList<ClientThread>();
+		ArrayList<ClientThread> InGamePlayers = new ArrayList<ClientThread>();
 		//Map.Entry<String, TapeHead> pairs;
 		
 		Map<String, TapeHead> players = new HashMap<String, TapeHead>();
@@ -296,7 +294,7 @@ public class Server {
 		    client = key.substring("Client".length());
 			ID = Integer.parseInt(client);
 			
-			InGamePlayers.add(this.clients.get(--ID));
+			InGamePlayers.add(this.clients.get(ID - 1));
 		}
 		
 		
@@ -322,6 +320,11 @@ public class Server {
 			oneClient = CTit.next();
 			oneClient.sendGameField(gameField);			
 		}
+	}
+	
+	public String gameMap(String gameName)
+	{
+		return this.getGameField(gameName);
 	}
 	
 	public void changeStat(String clientName, String gameName, boolean success)

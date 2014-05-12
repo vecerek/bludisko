@@ -14,7 +14,7 @@ public class ClientThread extends Thread {
 	private Server server;
 	private Socket socket;
 	private String name;
-	private String gameID;
+	public String gameID;
 	private int gameSpeed;
 	
 	private BufferedReader in;
@@ -125,12 +125,15 @@ public class ClientThread extends Thread {
 					continue;
 				else if(clientSaid.equals("list maps"))
 				{
-					System.out.println("Lofasz");
 					this.send(this.server.listFiles());
 				}
 				else if(clientSaid.equals("list games"))
 				{
 					this.send(this.server.listGames());
+				}
+				else if(clientSaid.equals("map"))
+				{
+					this.send(this.server.gameMap(this.gameID));
 				}
 				else if(clientSaid.contains("create:"))
 				{

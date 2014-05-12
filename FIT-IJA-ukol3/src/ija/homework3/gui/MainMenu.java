@@ -309,12 +309,12 @@ import ija.homework3.client.*;
                 String[] gameSizes = new String[size];
                 gameSizes = this.getArrayOf(sizes);
                 
-                
+                String map = this.client.request("refresh");
                 
                 //strListMap[listMap.getSelectedIndex()] -- The chosen map from the list (string)
                 //start a new game Ati magic
                 //new GamePlay(x,y).setVisible(true); -- Change x and y (map size) + add connection information if need (also change class constructor)
-                new GamePlay(this.client, Integer.parseInt(gameSizes[0]), Integer.parseInt(gameSizes[1])).setVisible(true);// delete
+                new GamePlay(this.client, map, Integer.parseInt(gameSizes[0]), Integer.parseInt(gameSizes[1])).setVisible(true);// delete
                 /***/
             }
             setVisible(true);
@@ -336,7 +336,9 @@ import ija.homework3.client.*;
                     String[] gameSizes = new String[size];
                     gameSizes = this.getArrayOf(sizes);
                     
-                    new GamePlay(this.client, Integer.parseInt(gameSizes[0]),Integer.parseInt(gameSizes[1])).setVisible(true);// delete
+                    String map = this.client.request("map");
+                    
+                    new GamePlay(this.client, map, Integer.parseInt(gameSizes[0]),Integer.parseInt(gameSizes[1])).setVisible(true);// delete
                 }
             }
         }
