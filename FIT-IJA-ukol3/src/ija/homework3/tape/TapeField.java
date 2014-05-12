@@ -206,7 +206,7 @@ public class TapeField {
 	 */
 	public String objType(){
 		if(this.obj == null)
-			return " ";
+			return "p";
 		else
 			return obj.objType();
 	}

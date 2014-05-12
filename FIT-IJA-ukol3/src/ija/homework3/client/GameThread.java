@@ -42,11 +42,9 @@ public class GameThread extends Thread {
 	
 	    System.out.println("GameThread - Response from server:");
 	        
-	    while((tmp = this.is.readLine()) != null)
-	    {
+	    tmp = this.is.readLine();
 	        System.out.println(tmp);
 	        answer += tmp;
-	    }
 	        
 	    return answer;
     }

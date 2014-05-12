@@ -7,7 +7,7 @@ public class Wall extends ija.homework3.tape.TapeObject {
 	}
 
 	public String objType(){
-		return "#";
+		return "w";
 	}
 	
 	@Override

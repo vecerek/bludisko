@@ -309,7 +309,7 @@ import ija.homework3.client.*;
                 String[] gameSizes = new String[size];
                 gameSizes = this.getArrayOf(sizes);
                 
-                String map = this.client.request("refresh");
+                String map = this.client.request("map");
                 
                 //strListMap[listMap.getSelectedIndex()] -- The chosen map from the list (string)
                 //start a new game Ati magic

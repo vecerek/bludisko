@@ -45,6 +45,8 @@ import ija.homework3.client.*;
             super("The Labyrinth");
             this.client = client;
             this.strMap = map;
+            System.out.println("CONSTRUCTOR: I got the map.\n" + map);
+            System.out.println("CONSTRUCTOR: this.strMap\n" + this.strMap);
             
             setResizable(false);
             setSize(1100,730);
@@ -87,7 +89,7 @@ import ija.homework3.client.*;
             strFormat = new String();
             strInputCommand = new String();
             strHistory = new String[10];
-            strMap = new String();
+            //strMap = new String();
             for (int i = 0; i < 10; i++) {
                 strHistory[i] = new String();
             }
@@ -117,6 +119,9 @@ import ija.homework3.client.*;
         //delete both Strmaps
          //strMap = "wwwwwwwwwwwwwwwwwwwwwwwwwppwp_pppppppppppppwpppppww>3w_wwwwwwwwwpwwwpwpwpwpwwpwppppppkwpwpppwkwpwkpwwpwwwwwwwwwpwgwwwwwpwwwpwwpppppppwpppppppwpppppwppwwwwwwwpwpwwwpwwwwwpwwwwwwkpppkwpwpwkppwpppwpppppwwwwpwwwpwpwwwpwwwpwwwwwpwwpppwpppppwpwpppwpppppwpwwwwpwwwwwwwwwwwpwpwwwpwpwwpppppppwpppppwpppwpppppwwwwwwgwwwwwpwwwwwwwwwwwgwwpppppppppwpppwpppwpppppwwpwwwwwgwwwpwgwpwpwpwwwwwwpwpwkwpwkwpwpppwpwpppppwwpwpwpwpwpwpwwwwwpwwwpwwwwpwpppwpwpppppwpppppwpwkwwpwpwwwpwwwwwpwpwwwwwpwpwwpwpwppppppkwpwpppppwpppwwpwpwwwwwwwwwpwwwwwgwpwwwwpppppppwpppppwpgpwpppppwwwwwwwwpwpwwwwwpwpwwwwwwwwpppppppgpgpppppwpppppppfwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwppwp_pppppppppppppwpppppww>3w_wwwwwwwwwpwwwpwpwpwpwwpwppppppkwpwpppwkwpwkpwwpwwwwwwwwwpwgwwwwwpwwwpwwpppppppwpppppppwpppppwppwwwwwwwpwpwwwpwwwwwpwwwwwwkpppkwpwpwkppwpppwpppppwwwwpwwwpwpwwwpwwwpwwwwwpwwpppwpppppwpwpppwpppppwpwwwwpwwwwwwwwwwwpwpwwwpwpwwpppppppwpppppwpppwpppppwwwwwwgwwwwwpwwwwwwwwwwwgwwpppppppppwpppwpppwpppppwwpwwwwwgwwwpwgwpwpwpwwwwwwpwpwkwpwkwpwpppwpwpppppwwpwpwpwpwpwpwwwwwpwwwpwwwwpwpppwpwpppppwpppppwpwkwwpwpwwwpwwwwwpwpwwwwwpwpwwpwpwppppppkwpwpppppwpppwwpwpwwwwwwwwwpwwwwwgwpwwwwpppppppwpppppwpgpwpppppwwwwwwwwpwpwwwwwpwpwwwwwwwwpppppppgpgpppppwpppppppfwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwppwp_pppppppppppppwpppppww>3w_wwwwwwwwwpwwwpwpwpwpwwpwppppppkwpwpppwkwpwkpwwpwwwwwwwwwpwgwwwwwpwwwpwwpppppppwpppppppwpppppwppwwwwwwwpwpwwwpwwwwwpwwwwwwkpppkwpwpwkppwpppwpppppwwwwpwwwpwpwwwpwwwpwwwwwpwwpppwpppppwpwpppwpppppwpwwwwpwwwwwwwwwwwpwpwwwpwpwwpppppppwpppppwpppwpppppwwwwwwgwwwwwpwwwwwwwwwwwgwwpppppppppwpppwpppwpppppwwpwwwwwgwwwpwgwpwpwpwwwwwwpwpwkwpwkwpwpppwpwpppppwwpwpwpwpwpwpwwwwwpwwwpwwwwpwpppwpwpppppwpppppwpwkwwpwpwwwpwwwwwpwpwwwwwpwpwwpwpwppppppkwpwpppppwpppwwpwpwwwwwwwwwpwwwwwgwpwwwwpppppppwpppppwpgpwpppppwwwwwwwwpwpwwwwwpwpwwwwwwwwpppppppgpgpppppwpppppppfwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwppwp_pppppppppppppwpppppww>3w_wwwwwwwwwpwwwpwpwpwpwwpwppppppkwpwpppwkwpwkpwwpwwwwwwwwwpwgwwwwwpwwwpwwpppppppwpppppppwpppppwppwwwwwwwpwpwwwpwwwwwpwwwwwwkpppkwpwpwkppwpppwpppppwwwwpwwwpwpwwwpwwwpwwwwwpwwpppwpppppwpwpppwpppppwpwwwwpwwwwwwwwwwwpwpwwwpwpwwpppppppwpppppwpppwpppppwwwwwwgwwwwwpwwwwwwwwwwwgwwpppppppppwpppwpppwpppppwwpwwwwwgwwwpwgwpwpwpwwwwwwpwpwkwpwkwpwpppwpwpppppwwpwpwpwpwpwpwwwwwpwwwpwwwwpwpppwpwpppppwpppppwpwkwwpwpwwwpwwwwwpwpwwwwwpwpwwpwpwppppppkwpwpppppwpppwwpwpwwwwwwwwwpwwwwwgwpwwwwpppppppwpppppwpgpwpppppwwwwwwwwpwpwwwwwpwpwwwwwwwwpppppppgpgpppppwpppppppfwwwwwwwwwwwwwwwwwwwwwwwwww";
         // strMap = "wwwwwwwwwwwwwwwwwwwwwppkwpppppwppppppppwwpwwwpwpwwwwwwpwwwpwppppppwphpwppppwpppwwwwwwwwwwpwpwwwwwwgwwpv1pppppwpppwp^4ppppwwpwwwwwpwwwwwpwwwwpww>3ppwpwpppwppppppwpwwpwpwkwwwgwpwwwwpwpwwpwpwpppwppppppppwkwwwwpwwwpwwwwwwwwwwwwwpppwpppgppppppwppkwwpwpwpwwwpwpwwwwwpwwwpwpwpwpppwppppppppwwpwwwpwwwwwwwwwwwwpwwpppppwppppppppwpppwwwwgwwwpwwwwgwwwwwpwwkkpwpppwppppppppppwwwwwwwwpwwwwwwwwwwwwwpppppppgppppppppppf";
+        //System.out.println("this.strMap\n" + this.strMap);
+        //System.out.println("static");
+        //this.strMap = "wwwwwwwwwwwwwwwwwwwww^1pkwpppppwppppppppwwpwwwpwpwwwwwwpwwwpwppppppwpppwppppwpppwwwwwwwwwwpwpwwwwwwgwwpppppppwpppwppppppwwpwwwwwpwwwwwpwwwwpwwpppwpwpppwppppppwpwwpwpwkwwwgwpwwwwpwpwwpwpwpppwppppppppwkwwwwpwwwpwwwwwwwwwwwwwpppwpppgppppppwppkwwpwpwpwwwpwpwwwwwpwwwpwpwpwpppwppppppppwwpwwwpwwwwwwwwwwwwpwwpppppwppppppppwpppwwwwgwwwpwwwwgwwwwwpwwkkpwpppwppppppppppwwwwwwwwpwwwwwwwwwwwwwpppppppgppppppppppf";
         /***/
             panelCont.setLayout(null);
             getContentPane().setLayout(null);
@@ -137,7 +142,7 @@ import ija.homework3.client.*;
             // 1) Set "strMap" to this new map. Use "paintField" to refresh the gui.
             // 2) Use "historyAddLine" to put the message to the history area
             
-            //paintField();
+            paintField();
             /***/
             panelCont.add(labelTexture);
 
@@ -226,6 +231,7 @@ import ija.homework3.client.*;
 
         //  Puts the map stored in strMap to GUI
         private void paintField() {
+        	System.out.println("I will paint: " + this.strMap);
             String tmpStrOrientation = new String();
             String tmpActChar = new String();
             for (int i = 0; i < fieldX; i++) {

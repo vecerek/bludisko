@@ -8,7 +8,7 @@ public class Key extends ija.homework3.tape.TapeObject {
 
 	@Override
 	public String objType(){
-		return "~";
+		return "k";
 	}
 
 	@Override
