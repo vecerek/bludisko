@@ -37,13 +37,13 @@ import ija.homework3.client.*;
         private int fieldX;
         private int fieldY;
         
-        private GameThread client;
+        private GuiControl control;
 
         /**  Constructor  */
-        public GamePlay(GameThread client, String map, int x, int y) {
+        public GamePlay(GuiControl control, String map, int x, int y) {
 
             super("The Labyrinth");
-            this.client = client;
+            this.control = control;
             this.strMap = map;
             System.out.println("CONSTRUCTOR: I got the map.\n" + map);
             System.out.println("CONSTRUCTOR: this.strMap\n" + this.strMap);
@@ -122,7 +122,7 @@ import ija.homework3.client.*;
         //System.out.println("this.strMap\n" + this.strMap);
         //System.out.println("static");
         //this.strMap = "wwwwwwwwwwwwwwwwwwwww^1pkwpppppwppppppppwwpwwwpwpwwwwwwpwwwpwppppppwpppwppppwpppwwwwwwwwwwpwpwwwwwwgwwpppppppwpppwppppppwwpwwwwwpwwwwwpwwwwpwwpppwpwpppwppppppwpwwpwpwkwwwgwpwwwwpwpwwpwpwpppwppppppppwkwwwwpwwwpwwwwwwwwwwwwwpppwpppgppppppwppkwwpwpwpwwwpwpwwwwwpwwwpwpwpwpppwppppppppwwpwwwpwwwwwwwwwwwwpwwpppppwppppppppwpppwwwwgwwwpwwwwgwwwwwpwwkkpwpppwppppppppppwwwwwwwwpwwwwwwwwwwwwwpppppppgppppppppppf";
-        /***/
+        
             panelCont.setLayout(null);
             getContentPane().setLayout(null);
             getContentPane().add(panelCont);
@@ -200,7 +200,8 @@ import ija.homework3.client.*;
             
             /** Ati */
             // "strInputCommand" stores the command given by the user, do your stuff (Ati magic)
-            this.client.send(this.strInputCommand);
+            /*this.client.send(this.strInputCommand);
+            System.out.println(this.strInputCommand);
             try {
             	String success = this.client.readResponse();
                 if(success.equals("OK"))
@@ -211,7 +212,7 @@ import ija.homework3.client.*;
             } catch(IOException e) {
             	System.err.println(e.getMessage());
             	this.historyAddLine(this.strInputCommand + " - NOT OK.");
-            };
+            };*/
             /***/
         }
 

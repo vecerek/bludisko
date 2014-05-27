@@ -73,7 +73,7 @@ public class Game {
                 throw new TapeOutOfSize("The playground exceeds maximal size in either way.");
             else{
 
-                this.playGround = new Tape(this.C, this.R, 1, content);
+                this.playGround = new Tape(this.C, this.R, 10, content);
             }
         	this.player = this.playGround.createHead(1);
             return this.player;

@@ -3,6 +3,9 @@ package ija.homework3.server;
 import java.io.*;
 import java.net.*;
 
+import ija.homework3.tape.TapeHead;
+import ija.homework3.game.*;
+
 /**
  * A thread created by the server to communicate
  * with the client.
@@ -10,204 +13,96 @@ import java.net.*;
  * 
  */
 public class ClientThread extends Thread {
-	
-	private Server server;
-	private Socket socket;
-	private String name;
-	public String gameID;
-	private int gameSpeed;
-	
+
+	private int ID;
+	private Socket connectionSocket;
 	private BufferedReader in;
 	private PrintStream out;
+	protected GameControl control;
+	protected Game game;
+	protected String map;
+	protected int speed;
+	protected TapeHead player;
 	
-	public ClientThread(Server server, Socket s, String name){
-		super();
-		this.server = server;
-		this.socket = s;
-		this.name = name;
-		this.gameID = "";
-		this.gameSpeed = 5;
+	public ClientThread(Socket connectionSocket, int ID) {
+		this.connectionSocket = connectionSocket;
+		this.ID = ID;
+	}
+	
+	public void run()
+	{
+		this.control = GameControl.getInstance();
+		
+		try {
+			
+			this.in = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
+			this.out = new PrintStream(connectionSocket.getOutputStream());
+			
+			String clientSaid;
+			
+			while(true)
+			{
+				clientSaid = this.in.readLine();
+				
+				if(clientSaid.equals("list maps"))
+					this.out.println(this.listFiles());
+				
+				else if(clientSaid.equals("list games"))
+					this.out.println(control.listGames());
+				
+				else if(clientSaid.startsWith("create:"))
+					this.createGame(clientSaid);
+				
+				else if(clientSaid.startsWith("join:"))
+					this.joinGame(clientSaid);
+				
+			}
+			
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+		}
 	}
 	
 	/**
-	 * A simple method reading messages from the client.
-	 * Those messages are interpreted into actual moves
-	 * in the game and executed afterwards.
-	 * @return client's message(command)
-	 * @throws IOException
+	 * Lists all possible labyrinths to select from
 	 */
-    /*public String readResponse()
-    {
-        String toDo = "";
-        String tmp;
-        try {
-        	BufferedReader stdIn = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-	
-        	System.out.println("Response from client:");
-	        
-        	while ((tmp = stdIn.readLine()) != null)
-        	{
-        		System.out.println(tmp);
-        		toDo += tmp;
-        	}
-        } catch (Exception e) {
-        	System.err.println(e.getMessage());
-        }
-        
-        return toDo;
-    }*/
-    
-    /**
-     * Send the actual state of the Tape to the client. 
-     * @param state the game field
-     */
-    public void send(String state)
-    {
-    	try {
-    		this.out.println(state);
-    	} catch(Exception e) {
-    		System.err.println(e.getMessage());
-    	}
-    }
-    
-    /**
-     * Sends the client the message, that he should repaint the scene.
-     * Waits for the agreement and sends the labyrinth's new state.
-     * 
-     * @param gameField		the labyrinth
-     */
-    public void sendGameField(String gameField)
-    {
-    	this.send("refresh");
-    	try {
-			while(this.in.readLine() != "OK");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.err.println(e.getMessage());
-		}
-    	this.send(gameField);
-    }
-    
-    /**
-     * The client joins the a new game with set game speed. 
-     * 
-     * @param gameID	points to the game the client is playing
-     * @param speed		time putting asleep the player after making a step
-     */
-    public void joinGame(String gameID, int speed)
-    {
-    	this.gameID = gameID;
-    	this.gameSpeed = speed;
-    }
-	
-    /**
-     * Starts the communication with the client. Checks if the client's
-     * action has ended successfully or not.
-     */
-	public void start()
+	public String listFiles()
 	{
-		System.out.println("New thread has started.");
-		try {
-		    //Communicating with client
-			String clientSaid = "";
-			boolean success;
-			
-			BufferedReader in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-    		PrintStream out = new PrintStream(this.socket.getOutputStream());
-    		
-    		this.in = in;
-    		this.out = out;
-			
-			while((clientSaid = this.in.readLine()) != "exit")
+		System.out.println("Listing files:");
+		File[] files = new File("examples/").listFiles();
+		
+		int i = 0;
+		String listOfFiles = "list maps:";
+		
+		for(File file : files)
+		{
+			if(file.isFile())
 			{
-				System.out.println("The client said to: |" + clientSaid+"|");
-				if(clientSaid.equals("") || clientSaid == null)
-					continue;
-				else if(clientSaid.equals("list maps"))
-				{
-					this.send(this.server.listFiles());
-				}
-				else if(clientSaid.equals("list games"))
-				{
-					this.send(this.server.listGames());
-				}
-				else if(clientSaid.equals("map"))
-				{
-					this.send(this.server.gameMap(this.gameID));
-				}
-				else if(clientSaid.contains("create:"))
-				{
-					String map = "";
-					int endIndexOfMap = clientSaid.indexOf(",speed:");
-					map = clientSaid.substring("create:".length(), endIndexOfMap);
-					System.out.println("Here I am 2: " + map);
-					String speedStr = clientSaid.substring(endIndexOfMap + ",speed:".length());
-					System.out.println("Here I am: " + speedStr);
-					int speed = Integer.parseInt(speedStr);
-					
-					String size = this.server.createNewGame(this.name, map, speed);
-					this.send(size);
-				}
-				else if(clientSaid.contains("connect:"))
-				{
-					String gameName = clientSaid.substring("connect:".length());
-					String size = this.server.connectToGame(this.name, gameName);
-					this.send(size);
-				}
-				else if(!(clientSaid.equals("go") || clientSaid.equals("stop")))
-				{
-					synchronized(this) {
-						success = this.server.execCommand(this.name, this.gameID, clientSaid);
-					}
-					
-					this.server.changeStat(this.name, this.gameID, true);
-					
-					if(success)
-					{
-						this.send("OK");
-						if(clientSaid.equals("step"))
-							try {
-								Thread.sleep(this.gameSpeed * 100);
-							}
-							catch (InterruptedException e) {
-								//Do nothing
-							}
-					}
-					else
-						this.send("NOT OK");
-					
-				}
-				else if(clientSaid.equals("go"))
-				{
-					clientSaid = "";
-					success = true;
-					boolean madeStep = false;
-					
-					while(!(clientSaid.equals("stop") || success == false))
-					{
-						madeStep = true;
-						
-						synchronized(this) {
-							success = this.server.execCommand(this.name, this.gameID, "step");
-						}
-						
-						try {
-							Thread.sleep(this.gameSpeed * 100);
-						}
-						catch (InterruptedException e) {
-							//Do nothing
-						}
-					}
-					
-					this.server.changeStat(this.name, this.gameID, madeStep);
-				}
+				if(i != 0)
+					listOfFiles += "," + file.getName();
+				else
+					listOfFiles += file.getName();
+				i++;
 			}
-			
-			this.socket.close();
-		
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
 		}
-		
+		    	
+		return listOfFiles;
 	}
+	
+	private void createGame(String create)
+	{
+		String map = "";
+		int endIndexOfMap = create.indexOf(",speed:");
+		map = create.substring("create:".length(), endIndexOfMap);
+		String speedStr = create.substring(endIndexOfMap + ",speed:".length());
+		
+		this.player = this.control.createNewGame(this.out, map, Integer.parseInt(speedStr));
+	}
+	
+	private void joinGame(String join)
+	{
+		String game = join.substring("join:".length());
+		this.player = this.control.joinGame(this.out, game);
+	}
+	
 }

@@ -39,17 +39,22 @@ import ija.homework3.client.*;
         private JList       listGame;
         private JSlider     sliderSpeed;
         private JTextArea  textFieldCurrentSpeed;
+        
         private String[] strListMap;
         private String[] strListGame;
         private double gameSpeed;
         
-        private GameThread client;
+        private String[] gameSizes = new String[2];
+        private String initialMap;
+        private boolean full = true;
+        
+        private GuiControl control;
 
         /**  Constructor  */
-        public MainMenu(GameThread client) {
+        public MainMenu(GuiControl control) {
             super("The Labyrinth");
             
-            this.client = client;
+            this.control = control;
 
             setResizable(false);
             setSize(922,542);
@@ -264,16 +269,15 @@ import ija.homework3.client.*;
             //strListGame = new String[strings.length]; -- Change "strings" to the string array containig the running games returned by the server after connection
             //System.arraycopy(strings,0,strListGame,0,strings.length-1); -||-
         	
-        	String maps = this.client.request("list maps" + System.getProperty("line.separator"));
-        	System.out.println("MainMenu: " + maps);
-        	int size = this.getNumberOf(maps);
-            this.strListMap = new String[size];
-            this.strListMap = this.getArrayOf(maps);
+        	this.control.request("list maps");
             
-            String games = this.client.request("list games" + System.getProperty("line.separator"));
-            size = this.getNumberOf(games);
-            this.strListGame = new String[size];
-            this.strListGame = this.getArrayOf(games);
+            this.control.request("list games");
+            
+            try {
+            	Thread.sleep(500);
+            } catch(Exception e) {
+            	System.err.println(e.getMessage());
+            }
             /***/
 
              // Don't touch or change location of the rest of the code in this method !!!
@@ -303,18 +307,22 @@ import ija.homework3.client.*;
                 int speed = this.sliderSpeed.getValue();
                 String createGame = "create:" + this.strListMap[this.listMap.getSelectedIndex()] + ",speed:" + Integer.toString(speed);
                 
-                String sizes = this.client.request(createGame);
-                System.out.println("Sizes: " + sizes);
-                int size = this.getNumberOf(sizes);
-                String[] gameSizes = new String[size];
-                gameSizes = this.getArrayOf(sizes);
+                this.control.request(createGame);
                 
-                String map = this.client.request("map");
+                try {
+                	Thread.sleep(500);
+                } catch(Exception e) {
+                	System.err.println(e.getMessage());
+                }
                 
                 //strListMap[listMap.getSelectedIndex()] -- The chosen map from the list (string)
                 //start a new game Ati magic
                 //new GamePlay(x,y).setVisible(true); -- Change x and y (map size) + add connection information if need (also change class constructor)
-                new GamePlay(this.client, map, Integer.parseInt(gameSizes[0]), Integer.parseInt(gameSizes[1])).setVisible(true);// delete
+                new GamePlay(
+                			this.control, this.initialMap, 
+                			Integer.parseInt(this.gameSizes[0]),
+                			Integer.parseInt(this.gameSizes[1])
+                			).setVisible(true);
                 /***/
             }
             setVisible(true);
@@ -322,47 +330,48 @@ import ija.homework3.client.*;
         }
 
         private void buttonActionConnect(java.awt.event.ActionEvent evt) {
-            if(listGame.getSelectedIndex() != -1 && strListGame[listMap.getSelectedIndex()] != null){
+            if(listGame.getSelectedIndex() != -1 && strListGame[listGame.getSelectedIndex()] != null){
                 setExtendedState(JFrame.ICONIFIED);
                 /** Ati */
-                String connect = "connect:" + this.strListGame[this.listGame.getSelectedIndex()];
-                String sizes = this.client.request(connect);
+                String join = "join:" + this.strListGame[this.listGame.getSelectedIndex()];
+                this.gameSizes[0] = this.gameSizes[1] = "0";
+                this.control.request(join);
+                
+                try {
+                	Thread.sleep(1000);
+                } catch(Exception e) {
+                	System.err.println(e.getMessage());
+                }
+                
                 //strListGame[listGame.getSelectedIndex()] -- The chosen game from the list (string)
                 //connect to a running game Ati magic
                 //new GamePlay(x,y).setVisible(true); -- Change x and y (map size) + add connection information if need (also change class constructor)
-                if(sizes != "Full.")
-                {
-                	int size = this.getNumberOf(sizes);
-                    String[] gameSizes = new String[size];
-                    gameSizes = this.getArrayOf(sizes);
-                    
-                    String map = this.client.request("map");
-                    
-                    new GamePlay(this.client, map, Integer.parseInt(gameSizes[0]),Integer.parseInt(gameSizes[1])).setVisible(true);// delete
-                }
+                if(!this.gameSizes[0].equals("0"))
+                    new GamePlay(
+                    			this.control, this.initialMap,
+                    			Integer.parseInt(gameSizes[0]),
+                    			Integer.parseInt(gameSizes[1])
+                    			).setVisible(true);
             }
         }
         
-        private int getNumberOf(String maps)
+        public void setMaps(String[] maps)
         {
-			Pattern p = Pattern.compile(",");
-			Matcher m = p.matcher(maps);
-			
-			int count = 0;
-				
-			while (m.find()){
-				count +=1;
-			}
-				
-			return count + 1;
+        	this.strListMap = maps;
         }
         
-        private String[] getArrayOf(String anything)
+        public void setGames(String[] games)
         {
-        	int size = this.getNumberOf(anything);
-        	String[] tmp = new String[size];
-
-        	tmp = anything.split(",");
-        	return tmp;
+        	this.strListGame = games;
+        }
+        
+        public void InitMap(String map)
+        {
+        	this.initialMap = map;
+        }
+        
+        public void setSizes(String[] sizes)
+        {
+        	this.gameSizes = sizes;
         }
     }
