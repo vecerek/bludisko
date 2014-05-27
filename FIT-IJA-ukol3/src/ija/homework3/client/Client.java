@@ -77,6 +77,12 @@ public class Client {
 				
 				else if(serverSaid.equals("Full."))
 					control.InitSizes(serverSaid, true);
+				
+				else if(serverSaid.startsWith("refresh:"))
+					control.refreshMap(serverSaid);
+				
+				else if(serverSaid.contains("OK"))
+					control.addHistory(serverSaid);
 			}
 			
 		} catch(Exception e) {

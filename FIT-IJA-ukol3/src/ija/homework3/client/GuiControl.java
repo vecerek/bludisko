@@ -58,6 +58,14 @@ public class GuiControl extends Thread {
 		this.main.InitMap(map);
 	}
 	
+	public void refreshMap(String map)
+	{
+		System.out.println("GuiControl: refreshMap()");
+		System.out.println("refreshmap:"+map);
+		map = map.substring("refresh:".length());
+		this.GUI.rePaintField(map);
+	}
+	
 	public void InitSizes(String sizes, boolean full)
 	{
 		if(!full)
@@ -74,6 +82,11 @@ public class GuiControl extends Thread {
 			mapSizes[0] = mapSizes[1] = "0";
 			this.main.setSizes(mapSizes);
 		}
+	}
+	
+	public void addHistory(String msg)
+	{
+		this.GUI.historyAddLine(msg);
 	}
 	
 

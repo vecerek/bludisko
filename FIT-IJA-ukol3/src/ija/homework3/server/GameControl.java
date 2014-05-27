@@ -41,10 +41,11 @@ public class GameControl {
 		return list;
 	}
 	
-	public TapeHead createNewGame(PrintStream out, String map, int speed)
+	public TapeHead createNewGame(ClientThread thread, PrintStream out, String map, int speed)
 	{
 		Game game = new Game(speed);
 		this.games.add(game);
+		int gameID = this.games.size() - 1;
 		
 		ArrayList<PrintStream> players = new ArrayList<PrintStream>();
 		players.add(out);
@@ -53,10 +54,12 @@ public class GameControl {
 		TapeHead player = game.startGame(map);
 		out.println("sizes:" +game.getSizes());
 		out.println("map:" + game.getLabyrinthState());
+		thread.bindGameID(gameID);
+		
 		return player;
 	}
 	
-	public TapeHead joinGame(PrintStream out, String gameName)
+	public TapeHead joinGame(ClientThread thread, PrintStream out, String gameName)
 	{
 		String tmp = gameName.substring("game".length());
 		int position = Integer.parseInt(tmp) - 1;
@@ -68,14 +71,43 @@ public class GameControl {
 		{
 			TapeHead player = game.addPlayer(size + 1);
 			(this.clientsInGames.get(position)).add(out);
+			
 			out.println("sizes:" + game.getSizes());
 			out.println("map:" + game.getLabyrinthState());
+			
+			thread.bindGameID(position + 1);
+			thread.setSpeed(game.speed);
+			this.refreshMap(position, true);
+			
 			return player;
 		}
 		else
 		{
 			out.println("Full.");
 			return null;
+		}
+	}
+	
+	public void refreshMap(int gameID, boolean joined)
+	{
+		ArrayList<PrintStream> players = new ArrayList<PrintStream>();
+		players = this.clientsInGames.get(gameID);
+		Game game = this.games.get(gameID);
+		String newMap = game.getLabyrinthState();
+		
+		int size = players.size();
+		int i = 1;
+		
+		for(PrintStream out : players)
+		{
+			if(joined)
+			{
+				if(i != size)
+					out.println("refresh:" + newMap);
+				i++;
+			}
+			else
+				out.println("refresh:" + newMap);
 		}
 	}
 	

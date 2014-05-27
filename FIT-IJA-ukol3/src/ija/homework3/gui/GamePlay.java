@@ -45,8 +45,7 @@ import ija.homework3.client.*;
             super("The Labyrinth");
             this.control = control;
             this.strMap = map;
-            System.out.println("CONSTRUCTOR: I got the map.\n" + map);
-            System.out.println("CONSTRUCTOR: this.strMap\n" + this.strMap);
+            this.control.bindGUI(this);
             
             setResizable(false);
             setSize(1100,730);
@@ -200,10 +199,10 @@ import ija.homework3.client.*;
             
             /** Ati */
             // "strInputCommand" stores the command given by the user, do your stuff (Ati magic)
-            /*this.client.send(this.strInputCommand);
+            this.control.request(this.strInputCommand);
             System.out.println(this.strInputCommand);
-            try {
-            	String success = this.client.readResponse();
+            /*try {
+            	String success = this.control.readResponse();
                 if(success.equals("OK"))
                 	this.historyAddLine(this.strInputCommand + " - OK.");
                 else
@@ -217,7 +216,7 @@ import ija.homework3.client.*;
         }
 
         //  Add one line to the bottom of the history
-        private void historyAddLine(String line){
+        public void historyAddLine(String line){
             strHistory[1] = strHistory[2];
             strHistory[2] = strHistory[3];
             strHistory[3] = strHistory[4];
@@ -280,7 +279,8 @@ import ija.homework3.client.*;
                             case "3": labelField[i][j].setIcon(new ImageIcon(getClass().getResource("/pic/hulk_"+strFormat+".png")));break;
                             case "4": labelField[i][j].setIcon(new ImageIcon(getClass().getResource("/pic/thor_"+strFormat+".png")));break;
                         }
-                        strMap = strMap.substring(0,i*fieldX+j+2)+strMap.substring(i*fieldX+j+3);
+                        strMap = strMap.substring(0,i*fieldX+j+1)+strMap.substring(i*fieldX+j+2);
+                        //strMap = strMap.substring(0,i*fieldX+j+2)+strMap.substring(i*fieldX+j+3);
                     }
                 }
             }
@@ -288,6 +288,7 @@ import ija.homework3.client.*;
         
         public void rePaintField(String Map)
         {
+        	System.out.println("Re-Painting.");
         	this.strMap = Map;
         	this.paintField();
         }
