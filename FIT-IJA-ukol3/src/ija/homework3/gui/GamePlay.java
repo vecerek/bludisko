@@ -163,10 +163,10 @@ import ija.homework3.client.*;
             labelHistory.setBackground(new Color(-1,true));
             labelHistory.setOpaque(true);
             labelHistory.setBounds(730, 325, 330, 25);
-            labelHistory.setText("History:");
+            labelHistory.setText(" History:");
             panelCont.add(labelHistory);
             textAreaHistory.setText(strHistory[0]+strHistory[1]+strHistory[2]+strHistory[3]+strHistory[4]+strHistory[5]+strHistory[6]+strHistory[7]+strHistory[8]+strHistory[9]);
-            textAreaHistory.setBounds(730, 350, 330, 150);
+            textAreaHistory.setBounds(730, 350, 330, 160);
             textAreaHistory.setEditable(false);
             panelCont.add(textAreaHistory);
 
@@ -174,7 +174,7 @@ import ija.homework3.client.*;
             labelCommandLine.setBackground(new Color(-1,true));
             labelCommandLine.setOpaque(true);
             labelCommandLine.setBounds(730, 620, 330, 25);
-            labelCommandLine.setText("Write your commands here:");
+            labelCommandLine.setText(" Write your commands here:");
             panelCont.add(labelCommandLine);
             textFieldCommandLine.setBounds(730, 645, 330, 25);
             textFieldCommandLine.addActionListener(new ActionListener() {
@@ -200,18 +200,7 @@ import ija.homework3.client.*;
             /** Ati */
             // "strInputCommand" stores the command given by the user, do your stuff (Ati magic)
             this.control.request(this.strInputCommand);
-            System.out.println(this.strInputCommand);
-            /*try {
-            	String success = this.control.readResponse();
-                if(success.equals("OK"))
-                	this.historyAddLine(this.strInputCommand + " - OK.");
-                else
-                	this.historyAddLine(this.strInputCommand + " - NOT OK.");
-                
-            } catch(IOException e) {
-            	System.err.println(e.getMessage());
-            	this.historyAddLine(this.strInputCommand + " - NOT OK.");
-            };*/
+            
             /***/
         }
 
@@ -225,17 +214,18 @@ import ija.homework3.client.*;
             strHistory[6] = strHistory[7];
             strHistory[7] = strHistory[8];
             strHistory[8] = strHistory[9];
-            strHistory[9] = line + "\n";
+            strHistory[9] = " " + line + "\n";
             textAreaHistory.setText(strHistory[0]+strHistory[1]+strHistory[2]+strHistory[3]+strHistory[4]+strHistory[5]+strHistory[6]+strHistory[7]+strHistory[8]+strHistory[9]);
         }
 
         //  Puts the map stored in strMap to GUI
         private void paintField() {
-        	System.out.println("I will paint: " + this.strMap);
             String tmpStrOrientation = new String();
             String tmpActChar = new String();
             for (int i = 0; i < fieldX; i++) {
                 for(int j = 0; j < fieldY; j++) {
+                	labelField[i][j].setIcon(null);
+	                labelFieldArrow[i][j].setIcon(null);
                     labelField[i][j].setBounds(j*Integer.parseInt(strFormat),i*Integer.parseInt(strFormat),Integer.parseInt(strFormat),Integer.parseInt(strFormat));
                     labelFieldArrow[i][j].setBounds(j*Integer.parseInt(strFormat),i*Integer.parseInt(strFormat),Integer.parseInt(strFormat),Integer.parseInt(strFormat));
                     tmpActChar = strMap.split("")[i*fieldX+j+1];
@@ -288,7 +278,6 @@ import ija.homework3.client.*;
         
         public void rePaintField(String Map)
         {
-        	System.out.println("Re-Painting.");
         	this.strMap = Map;
         	this.paintField();
         }

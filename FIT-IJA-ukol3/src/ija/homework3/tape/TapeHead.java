@@ -1,5 +1,7 @@
 package ija.homework3.tape;
 
+import ija.homework3.server.GameControl;
+
 public class TapeHead {
 	
 	protected int id;		//possible values: 1..4, 1=Ironman, 2=Captain America, 3=Hulk, 4=Thor
@@ -11,6 +13,8 @@ public class TapeHead {
 	private int passed;
 	private int failed;
 	private int kills;
+	private GameControl control;
+	private int gameID;
 	
 	public TapeHead(int id)
 	{
@@ -33,6 +37,16 @@ public class TapeHead {
 	public int id()
 	{
 		return this.id;
+	}
+	
+	public void bindControl(GameControl control)
+	{
+		this.control = control;
+	}
+	
+	public void bindGameID(int ID)
+	{
+		this.gameID = ID;
 	}
 	
 	@Override
@@ -68,6 +82,9 @@ public class TapeHead {
 	public void die()
 	{
 		this.alive = false;
+		this.field = null;
+		
+		this.control.notifyAll(this.gameID, this.id, "has died.");
 	}
 	
 	public boolean isAlive()
@@ -158,7 +175,9 @@ public class TapeHead {
 		if(fieldTmp != null)
 		{
 			if(fieldTmp.canSeize())
+			{
 				return seizeField(fieldTmp);
+			}
 			else if(fieldTmp.canKill())
 			{
 				fieldTmp.kill();
@@ -259,7 +278,7 @@ public class TapeHead {
 	 */
 	public boolean finished()
 	{
-		if(this.field.objType() == "F")
+		if(this.field.objType().equals("f"))
 			return true;
 		else
 			return false;

@@ -64,7 +64,7 @@ public class ClientThread extends Thread {
 				
 			}
 			
-		} catch (IOException e) {
+		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
 	}
@@ -74,7 +74,6 @@ public class ClientThread extends Thread {
 	 */
 	public String listFiles()
 	{
-		System.out.println("Listing files:");
 		File[] files = new File("examples/").listFiles();
 		
 		int i = 0;
@@ -124,25 +123,28 @@ public class ClientThread extends Thread {
 	
 	private void executeCommand(String command, boolean go)
 	{
-		System.out.println("Executing: " + command);
 		try {					
 	    	switch(command)
 	       	{
+	       		case "keys":
+	       			int keys = this.player.numberOfKeys();
+	       			this.out.println("keys: " + Integer.toString(keys));
+	       			break;
 	       		case "take":
 	       			if(this.player.take())
-	       				this.out.println("take - OK.");
+	       				this.out.println("take - OK");
 	       			else
-	       				this.out.println("take - NOT OK.");
+	       				this.out.println("take - NOT OK");
 	       			break;
 	       		case "open":
 	       			if(this.player.open())
-	       				this.out.println("open - OK.");
+	       				this.out.println("open - OK");
 	       			else
-	       				this.out.println("open - NOT OK.");
+	       				this.out.println("open - NOT OK");
 	       			break;
 	       		case "left":
 	       			this.player.left();
-	       			this.out.println("left - OK.");
+	       			this.out.println("left - OK");
 	       			break;
 	       		case "right":
 	       			this.player.right();
@@ -151,11 +153,13 @@ public class ClientThread extends Thread {
 	       		case "step":
 	       			if(this.player.step())
 	       			{
+	       				this.control.refreshMap(this.gameID, false);
 	       				//if player's won the game
-	       				if(this.player.finished());
-	       					//TODO: notify all clients in the game
-	       				if(!go)
-	       					this.out.println("step - OK");
+		       			if(this.player.finished())
+		       				this.control.notifyAll(this.gameID, this.player.id(), "has WON!!!");
+	       				
+		       			if(!go)
+		       				this.out.println("step - OK");
 	       			}
 	       			else
 	       				this.out.println("step - NOT OK");
@@ -170,34 +174,66 @@ public class ClientThread extends Thread {
 		}
 	}
 	
-	private void processGoCommand()
+	private void recursiveStep()
 	{
-		String command;
-		
-		if(this.player.step())
-		{
-			try {
-				this.control.refreshMap(this.gameID, false);
-				Thread.sleep(this.speed * 100);
-			
-				while(true)
-				{
-					command = this.in.readLine();
-					if(command.equals("stop"))
-						break;
-					this.player.step();
-					this.control.refreshMap(this.gameID, false);
-					Thread.sleep(this.speed * 100);
-				}
-				
-			} catch(Exception e) {
-				System.err.println(e.getMessage());
+		try {
+			this.player.step();
+			this.control.refreshMap(this.gameID, false);
+			//if player's won the game
+			if(this.player.finished())
+			{
+				this.control.notifyAll(this.gameID, this.player.id(), "has WON!!!");
+				this.connectionSocket.setSoTimeout(0);
+				return;
 			}
 			
-			this.out.println("go - OK");
+			Thread.sleep(this.speed * 100);
+			String command = this.in.readLine();
+			if(command.equals("stop"))
+			{
+				this.connectionSocket.setSoTimeout(0);
+				return;
+			}
+		} catch(Exception e) {
+			this.recursiveStep();
+			return;
 		}
-		else
-			this.out.println("go - NOT OK");
+	}
+	
+	private void processGoCommand()
+	{
+		try {
+			this.connectionSocket.setSoTimeout(50);
+			if(this.player.step())
+			{
+				this.control.refreshMap(this.gameID, false);
+				//if player's won the game
+				if(this.player.finished())
+				{
+					this.out.println("go - OK");
+					this.control.notifyAll(this.gameID, this.player.id(), "has WON!!!");
+					this.connectionSocket.setSoTimeout(0);
+					return;
+				}
+				
+				Thread.sleep(this.speed * 100);
+				String command = this.in.readLine();
+				if(command.equals("stop"))
+					this.out.println("go - OK");
+				this.connectionSocket.setSoTimeout(0);
+			}
+			else
+				this.out.println("go - NOT OK");
+			
+		} catch(Exception e) {
+			this.recursiveStep();
+			this.out.println("go - OK");
+			try {
+				this.connectionSocket.setSoTimeout(0);
+			} catch(Exception ex) {
+				//Do nothing.
+			}
+		}
 	}
 	
 }

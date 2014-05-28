@@ -49,7 +49,6 @@ public class Tape {
 	{
 		//Gets the first free position from the Array
 		int k = 0;
-		System.out.println("Size of headArray: " + this.headArray.length);
 		while(this.headArray[k] != null)
 			k++;
 		

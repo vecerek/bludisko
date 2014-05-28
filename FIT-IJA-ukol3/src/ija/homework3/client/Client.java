@@ -54,14 +54,10 @@ public class Client {
 			GuiControl control = new GuiControl(client.out);
 			
 			String serverSaid;
-			String gameSizes = "";
-			String map = "";
 			
 			while(true)
 			{
 				serverSaid = client.in.readLine();
-				
-				System.out.println(serverSaid);
 				
 				if(serverSaid.startsWith("list maps:"))
 					control.sendMaps(serverSaid);
@@ -83,6 +79,15 @@ public class Client {
 				
 				else if(serverSaid.contains("OK"))
 					control.addHistory(serverSaid);
+				
+				else if(serverSaid.startsWith("keys:"))
+					control.addHistory(serverSaid);
+				
+				else if(serverSaid.contains("has"))
+					control.addHistory(serverSaid);
+				
+				else if(serverSaid.equals("quit"))
+					break;
 			}
 			
 		} catch(Exception e) {

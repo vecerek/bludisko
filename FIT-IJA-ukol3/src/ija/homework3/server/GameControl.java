@@ -18,7 +18,7 @@ public class GameControl {
     
 	public static GameControl getInstance()
 	{
-		if (instance == null)
+		if(instance == null)
 			instance = new GameControl();
 		return instance;
 	}
@@ -45,16 +45,18 @@ public class GameControl {
 	{
 		Game game = new Game(speed);
 		this.games.add(game);
-		int gameID = this.games.size() - 1;
+		int gameID = this.games.size() + 1;
 		
 		ArrayList<PrintStream> players = new ArrayList<PrintStream>();
 		players.add(out);
 		this.clientsInGames.add(players);
 		
 		TapeHead player = game.startGame(map);
+		player.bindControl(this);
+		player.bindGameID(gameID - 1);
 		out.println("sizes:" +game.getSizes());
 		out.println("map:" + game.getLabyrinthState());
-		thread.bindGameID(gameID);
+		thread.bindGameID(gameID - 1);
 		
 		return player;
 	}
@@ -70,6 +72,8 @@ public class GameControl {
 		if(size < MAX_PLAYERS)
 		{
 			TapeHead player = game.addPlayer(size + 1);
+			player.bindControl(this);
+			player.bindGameID(position + 1);
 			(this.clientsInGames.get(position)).add(out);
 			
 			out.println("sizes:" + game.getSizes());
@@ -77,7 +81,7 @@ public class GameControl {
 			
 			thread.bindGameID(position + 1);
 			thread.setSpeed(game.speed);
-			this.refreshMap(position, true);
+			this.refreshMap(position + 1, true);
 			
 			return player;
 		}
@@ -91,8 +95,8 @@ public class GameControl {
 	public void refreshMap(int gameID, boolean joined)
 	{
 		ArrayList<PrintStream> players = new ArrayList<PrintStream>();
-		players = this.clientsInGames.get(gameID);
-		Game game = this.games.get(gameID);
+		players = this.clientsInGames.get(gameID - 1);
+		Game game = this.games.get(gameID - 1);
 		String newMap = game.getLabyrinthState();
 		
 		int size = players.size();
@@ -108,6 +112,36 @@ public class GameControl {
 			}
 			else
 				out.println("refresh:" + newMap);
+		}
+	}
+	
+	public void notifyAll(int gameID, int ID, String msg)
+	{
+		ArrayList<PrintStream> players = new ArrayList<PrintStream>();
+		players = this.clientsInGames.get(gameID - 1);
+		
+		String hero = "";
+		switch(ID)
+		{
+			case 1:
+				hero = "Iron-Man";
+				break;
+			case 2:
+				hero = "Captain America";
+				break;
+			case 3:
+				hero= "Hulk";
+				break;
+			case 4:
+				hero= "Thor";
+				break;
+			default:
+				break;
+		}
+		
+		for(PrintStream out : players)
+		{
+			out.println(hero + " " + msg);
 		}
 	}
 	

@@ -46,7 +46,7 @@ import ija.homework3.client.*;
         
         private String[] gameSizes = new String[2];
         private String initialMap;
-        private boolean full = true;
+        //private boolean full = true;
         
         private GuiControl control;
 

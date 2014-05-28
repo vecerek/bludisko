@@ -60,8 +60,6 @@ public class GuiControl extends Thread {
 	
 	public void refreshMap(String map)
 	{
-		System.out.println("GuiControl: refreshMap()");
-		System.out.println("refreshmap:"+map);
 		map = map.substring("refresh:".length());
 		this.GUI.rePaintField(map);
 	}

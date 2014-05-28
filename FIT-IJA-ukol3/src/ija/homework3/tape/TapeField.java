@@ -79,7 +79,7 @@ public class TapeField {
 	
 	public boolean canKill()
 	{
-		if(this.obj.canSeize() && this.head != null)
+		if(this.head != null)
 			return true;
 		else
 			return false;
