@@ -21,6 +21,12 @@ public class GuiControl extends Thread {
 
 		this.out = out;
 	}
+	
+	public void closeWindow()
+	{
+		this.GUI.setVisible(false);
+		this.main.setVisible(true);
+	}
 		
 	public void bindGUI(GamePlay GUI)
 	{

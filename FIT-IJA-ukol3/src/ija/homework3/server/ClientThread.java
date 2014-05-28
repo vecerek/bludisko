@@ -59,6 +59,14 @@ public class ClientThread extends Thread {
 				
 				else if(clientSaid.equals("go"))
 					this.processGoCommand();
+				
+				else if(clientSaid.equals("quit"))
+				{
+					this.player.die();
+					this.out.println("quit");
+					break;
+				}
+				
 				else
 					this.executeCommand(clientSaid, false);
 				

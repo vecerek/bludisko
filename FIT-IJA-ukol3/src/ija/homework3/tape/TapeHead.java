@@ -82,8 +82,10 @@ public class TapeHead {
 	public void die()
 	{
 		this.alive = false;
+		this.keys = 0;
+		this.field.head = null;
 		this.field = null;
-		
+
 		this.control.notifyAll(this.gameID, this.id, "has died.");
 	}
 	
@@ -180,6 +182,7 @@ public class TapeHead {
 			}
 			else if(fieldTmp.canKill())
 			{
+				this.addKeys(fieldTmp.lootKeys());
 				fieldTmp.kill();
 				this.kills++;
 				return this.makeStep(fieldTmp);

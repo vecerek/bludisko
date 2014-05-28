@@ -91,6 +91,14 @@ public class TapeField {
 		this.head = null;
 	}
 	
+	public int lootKeys()
+	{
+		if(this.canKill())
+			return this.head.numberOfKeys();
+		else
+			return 0;
+	}
+	
 	public int getPlayerID()
 	{
 		return this.head.id();

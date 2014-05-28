@@ -36,6 +36,15 @@ public class Client {
 		System.out.println("Connection Established");
 	}
 	
+	public void disconnect()
+	{
+		try {
+			this.socket.close();
+		} catch(Exception e) {
+			System.err.println(e.getMessage());
+		}
+	}
+	
 	/**
 	 * Creates the client, opens connection and sends
 	 * the commands caught in the GUI.
@@ -87,7 +96,11 @@ public class Client {
 					control.addHistory(serverSaid);
 				
 				else if(serverSaid.equals("quit"))
+				{
+					control.closeWindow();
+					client.disconnect();
 					break;
+				}
 			}
 			
 		} catch(Exception e) {
