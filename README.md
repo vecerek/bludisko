@@ -1,4 +1,4 @@
-bludisko_bazdmeg
+bludisko
 ================
 Projekt do IJA.
 
